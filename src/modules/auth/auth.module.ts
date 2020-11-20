@@ -6,12 +6,13 @@ import { CryptographerService } from './cryptographer.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { JwtStrategy } from './passport/jwt.strategy';
 import { LocalStrategy } from './passport/local.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
 
 @Module({
-  providers: [AuthService, LocalStrategy, CryptographerService],
+  providers: [AuthService, LocalStrategy, CryptographerService, JwtStrategy],
   controllers: [AuthController],
   imports: [
     TypeOrmModule.forFeature([User]),
