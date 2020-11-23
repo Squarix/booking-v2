@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeorm';
 import { IsEmail, IsNotEmpty, MaxLength } from 'class-validator';
+import { Room } from '../room/room.entity';
 
 export enum UserTypes {
   moderator = 'moderator',
@@ -32,4 +33,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany((type) => Room, (room) => room.user)
+  rooms: Room[];
 }

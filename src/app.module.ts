@@ -7,13 +7,21 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { ContryModule } from './contry/contry.module';
-import { CountryService } from './modules/country/country.service';
+import { CountryModule } from './modules/country/country.module';
+import { CityModule } from './modules/city/city.module';
+import { RoomModule } from './modules/room/room.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), UsersModule, AuthModule, ContryModule],
+  imports: [
+    TypeOrmModule.forRoot(),
+    AuthModule,
+    CityModule,
+    CountryModule,
+    UsersModule,
+    RoomModule,
+  ],
   controllers: [AppController],
-  providers: [AppService, CountryService],
+  providers: [AppService],
 })
 export class AppModule {
   constructor(private connection: Connection) {}
