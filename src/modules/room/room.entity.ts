@@ -7,7 +7,7 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
-  ManyToMany,
+  ManyToMany, JoinTable,
 } from 'typeorm';
 import { IsNotEmpty, MaxLength, Min } from 'class-validator';
 import { City } from '../city/city.entity';
@@ -70,5 +70,6 @@ export class Room {
   image: Image;
 
   @ManyToMany(() => Filter, (filter) => filter.rooms)
-  rooms: Room[];
+  @JoinTable()
+  filters: Filter[];
 }
