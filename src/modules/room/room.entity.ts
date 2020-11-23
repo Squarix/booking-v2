@@ -1,7 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Unique,
+  OneToMany,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+} from 'typeorm';
 import { IsNotEmpty, MaxLength, Min } from 'class-validator';
 import { City } from '../city/city.entity';
 import { User } from '../users/user.entity';
+import { Image } from '../image/image.entity';
+import { Booking } from '../booking/booking.entity';
+import { Filter } from '../filter/filter.entity';
 
 export enum RoomStatus {
   declined = 'declined',
@@ -10,7 +23,6 @@ export enum RoomStatus {
 }
 
 @Entity()
-@Unique('UQ-CODE', ['code'])
 export class Room {
   @PrimaryGeneratedColumn()
   id: number;
@@ -41,9 +53,22 @@ export class Room {
   @IsNotEmpty()
   price: number;
 
-  @ManyToOne((type) => City, (city) => city.rooms)
+  @ManyToOne(() => City, (city) => city.rooms)
   city: City;
 
-  @ManyToOne((type) => User, (user) => user.rooms)
+  @ManyToOne(() => User, (user) => user.rooms)
   user: User;
+
+  @OneToMany(() => Image, (image) => image.room)
+  images: Image[];
+
+  @OneToMany(() => Booking, (booking) => booking.room)
+  bookings: Booking[];
+
+  @OneToOne(() => Image, (image) => image.mainRoom)
+  @JoinColumn()
+  image: Image;
+
+  @ManyToMany(() => Filter, (filter) => filter.rooms)
+  rooms: Room[];
 }

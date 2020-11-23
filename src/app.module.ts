@@ -10,6 +10,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CountryModule } from './modules/country/country.module';
 import { CityModule } from './modules/city/city.module';
 import { RoomModule } from './modules/room/room.module';
+import { ImageModule } from './modules/image/image.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { CategoryModule } from './modules/category/category.module';
+import { FilterModule } from './modules/filter/filter.module';
 
 @Module({
   imports: [
@@ -19,6 +23,10 @@ import { RoomModule } from './modules/room/room.module';
     CountryModule,
     UsersModule,
     RoomModule,
+    ImageModule,
+    BookingModule,
+    CategoryModule,
+    FilterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

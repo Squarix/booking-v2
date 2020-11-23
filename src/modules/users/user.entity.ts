@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeorm';
 import { IsEmail, IsNotEmpty, MaxLength } from 'class-validator';
 import { Room } from '../room/room.entity';
+import { Booking } from '../booking/booking.entity';
 
 export enum UserTypes {
   moderator = 'moderator',
@@ -36,4 +37,7 @@ export class User {
 
   @OneToMany((type) => Room, (room) => room.user)
   rooms: Room[];
+
+  @OneToMany((type) => Booking, (booking) => booking.room)
+  bookings: Booking[];
 }
