@@ -7,13 +7,17 @@ import {
   Post,
   UseGuards,
   Request,
-  Put, UsePipes, ValidationPipe,
+  Put,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { plainToClass } from 'class-transformer';
+import { ReturnUserDto } from './dto/return-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -40,13 +44,12 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  updateUser(@Request() req, @Body() body: UpdateUserDto): Promise<User> {
+  async updateUser(@Request() req, @Body() body: UpdateUserDto): Promise<User> {
     const {
       user: { id },
     } = req;
 
-    return this.usersService.update(id, body);
+    return this.usersService.update(id, plainToClass(UpdateUserDto, body));
   }
 
   @Get(':id')

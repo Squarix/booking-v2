@@ -9,6 +9,7 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from '../users/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +23,7 @@ export class AuthController {
 
   @Post('register')
   async register(@Body(new ValidationPipe()) user: CreateUserDto) {
-    return this.authService.signUp(user);
+    const createdUser = await this.authService.signUp(user);
+    return this.authService.login(createdUser);
   }
 }
