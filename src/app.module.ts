@@ -14,6 +14,7 @@ import { ImageModule } from './modules/image/image.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { CategoryModule } from './modules/category/category.module';
 import { FilterModule } from './modules/filter/filter.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -27,6 +28,9 @@ import { FilterModule } from './modules/filter/filter.module';
     BookingModule,
     CategoryModule,
     FilterModule,
+    MulterModule.register({
+      dest: './uploads',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

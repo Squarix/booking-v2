@@ -1,10 +1,20 @@
-import { Controller, Get, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { RoomService } from './room.service';
 import { Room } from './room.entity';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+  AnyFilesInterceptor,
+  FileFieldsInterceptor,
+} from '@nestjs/platform-express';
 
 @Controller('rooms')
-export class CategoryController {
+export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Get('/')
@@ -13,9 +23,13 @@ export class CategoryController {
   }
 
   @Post('/')
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 5 }]))
-  create(@UploadedFiles() files): Promise<Room> {
-    console.log(files);
+  @UseInterceptors(AnyFilesInterceptor())
+  create(@UploadedFiles() files, @Body() body): Promise<Room> {
+    const { filters: strFilters, roomParams: strRoomParams } = body;
+    const filters = JSON.parse(strFilters);
+    const roomParams = JSON.parse(strRoomParams);
+
+    console.log(body, files);
     return new Promise<Room>(() => null);
   }
 }
