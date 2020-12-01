@@ -20,10 +20,9 @@ export class Filter {
   @MaxLength(50)
   filter: string;
 
+
   @Column()
-  @IsNotEmpty()
-  @MaxLength(5)
-  code: string;
+  categoryId: number;
 
   @ManyToOne((type) => Category, (category) => category.filters)
   category: Category;

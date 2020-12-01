@@ -13,4 +13,8 @@ export class CategoryService {
   findAll(): Promise<Category[]> {
     return this.catRepository.find();
   }
+
+  find(options): Promise<Category> {
+    return this.catRepository.findOne(options);
+  }
 }
