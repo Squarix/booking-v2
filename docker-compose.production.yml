@@ -23,3 +23,15 @@ services:
       - '3000:3000'
     depends_on:
       - 'postgres'
+  booking-frontend:
+    build: ./booking-frontend
+    container_name: booking-frontend
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - API_HOST=booking-api
+      - API_PORT=3000
+    depends_on:
+      - 'booking-api'
+    ports:
+      - '4000:80'
