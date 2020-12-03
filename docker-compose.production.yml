@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  postgres:
+    container_name: postgres_db
+    image: postgres:10-alpine
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=booking-api
+    volumes:
+      - ./docker-volumes/postgresql:/var/lib/postgresql
+  booking-api:
+    build: ./booking-api
+    container_name: booking-api
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - DB_PORT=5432
+      - DB_HOST=postgres
+    ports:
+      - '3000:3000'
+    depends_on:
+      - 'postgres'
