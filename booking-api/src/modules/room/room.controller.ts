@@ -4,7 +4,9 @@ import {
   Get,
   Post,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
+  Request, Param,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { Room } from './room.entity';
@@ -15,8 +17,8 @@ import { Filter } from '../filter/filter.entity';
 import { FilterService } from '../filter/filter.service';
 import { City } from '../city/city.entity';
 import { CityService } from '../city/city.service';
-import { plainToClass } from 'class-transformer';
-import { CreateRoomDto } from './dto/create-room.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { User } from '../users/user.entity';
 
 @Controller('rooms')
 export class RoomController {
@@ -27,28 +29,41 @@ export class RoomController {
     private readonly cityService: CityService,
   ) {}
 
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<Room> {
+    return this.roomService.findOne(id);
+  }
+
   @Get('/')
   findAll(): Promise<Room[]> {
     return new Promise<Room[]>(() => []);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/')
   @UseInterceptors(AnyFilesInterceptor())
-  async create(@UploadedFiles() files, @Body() body): Promise<Room> {
-    const { filters: strFilters, roomParams: strRoomParams } = body;
+  async create(
+    @UploadedFiles() files,
+    @Request() req,
+    @Body() body,
+  ): Promise<Room> {
+    const { filters: strFilters, roomParams: strRoomParams, mainImage } = body;
+    const { user }: { user: User } = req;
     const filters = JSON.parse(strFilters);
     const roomParams = JSON.parse(strRoomParams);
 
-    console.log(files);
     const uploadedFiles: string[] = await Promise.all(
       files.map((file) =>
         this.imageService.writeImage(file.buffer, file.originalname),
       ),
     );
 
-    const images: Image[] = await Promise.all(
+    let images: Image[] = await Promise.all(
       uploadedFiles.map((filePath) => this.imageService.create(filePath)),
     );
+
+    const previewImage = images[mainImage];
+    images = images.filter((image, index) => index !== mainImage);
 
     const filterObjects: Filter[] = await Promise.all(
       filters.map(async ({ filter, categoryId }) =>
@@ -61,6 +76,13 @@ export class RoomController {
       roomParams.countryId,
     );
 
-    return this.roomService.create(roomParams, images, filterObjects, city);
+    return this.roomService.create(
+      user,
+      roomParams,
+      images,
+      previewImage,
+      filterObjects,
+      city,
+    );
   }
 }

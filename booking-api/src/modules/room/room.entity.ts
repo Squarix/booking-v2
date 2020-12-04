@@ -7,7 +7,8 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
-  ManyToMany, JoinTable,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { IsNotEmpty, MaxLength, Min } from 'class-validator';
 import { City } from '../city/city.entity';
