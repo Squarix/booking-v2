@@ -28,6 +28,8 @@ import Redirect from "react-router-dom/es/Redirect";
 import InfoDialog from "../Layouts/InfoDialog";
 import Footer from "../Layouts/Footer";
 import Menu from "../Layouts/Menu";
+import { connect } from "react-redux";
+import { room } from "../reducers/room-reducer";
 
 
 const roomService = new RoomService();
@@ -103,6 +105,7 @@ class ViewRoom extends React.Component {
   }
 
   componentDidMount() {
+    this.props.fetchRoom({ id: this.props.match.params.id });
     const roomId = this.props.match.params.id;
     roomService.getRoomBookings(roomId).then(bookings => {
       console.log(bookings)
@@ -110,9 +113,9 @@ class ViewRoom extends React.Component {
         bookedDates: bookings
       })
     });
-    roomService.getRoom(roomId).then(room => {
-      this.setState(room);
-    });
+    // roomService.getRoom(roomId).then(room => {
+    //   this.setState(room);
+    // });
   }
 
   handleBooking = () => {
@@ -145,17 +148,19 @@ class ViewRoom extends React.Component {
   }
 
   render() {
-    const {classes} = this.props;
+    const {classes, room} = this.props;
+    if (!room)
+      return null;
 
     return (
-        <React.Fragment>
+        <>
           <Menu/>
           <Container fixed>
             <Grid container className={classes.bodyContainer}>
               <Grid md={9} xs={12} className={classes.content} item>
-                <Typography variant={'h1'} className={classes.header}>{this.state.address}</Typography>
+                <Typography variant={'h1'} className={classes.header}>{room.address}</Typography>
                 <Carousel className={classes.carousel}>
-                  {this.state.images.map(image =>
+                  {room.images.map(image =>
                       <div className={classes.roomImageDiv}>
                         <img src={`${apiUrl}/${image.path}`} className={classes.roomImage}/>
                       </div>
@@ -164,7 +169,7 @@ class ViewRoom extends React.Component {
                 <div className={classes.descriptionBlock}>
                   <Typography variant={'h4'}>Description</Typography>
                   <p className={classes.description}>
-                    {this.state.description}
+                    {room.description}
                   </p>
                 </div>
               </Grid>
@@ -178,24 +183,24 @@ class ViewRoom extends React.Component {
                 <List>
                   <ListItem className={classes.label}>
                     <GroupIcon/>
-                    <span>{'max '}{this.state.guestsAmount} guests</span>
+                    <span>{'max '}{room.guestsAmount} guests</span>
                   </ListItem>
                   <ListItem className={classes.label}>
                     <AttachMoneyIcon/>
-                    <span>{' ~'}{this.state.price} per day</span>
+                    <span>{' ~'}{room.price} per day</span>
                   </ListItem>
                   <ListItem className={classes.label}>
                     <LocationOnIcon/>
-                    <span>{this.state.city.name}</span>
+                    <span>{room?.city.name}</span>
                   </ListItem>
                   <ListItem className={classes.label}>
                     <PermIdentityIcon/>
-                    <span>{this.state.user.email}</span>
+                    <span>{room?.user.email}</span>
                   </ListItem>
                   <ListItem className={classes.label}>
                     <DatePicker
-                        name={'startDate'}
-                        selected={this.state.startDate}
+                        name="startDate"
+                        selected={room.startDate}
                         className={classes.datePicker}
                         onChange={this.onStartDateChange}
                         placeholderText='Select start date'
@@ -220,8 +225,12 @@ class ViewRoom extends React.Component {
                           <span>Total: {this.state.totalPrice} $</span>
                         </ListItem>
                         <ListItem className={classes.label}>
-                          <Button onClick={this.handleBooking} variant="contained" color="primary"
-                                  className={classes.button}>
+                          <Button
+                            onClick={this.handleBooking}
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                          >
                             Book
                           </Button>
                         </ListItem>
@@ -238,7 +247,7 @@ class ViewRoom extends React.Component {
 
           </Container>
           <Footer/>
-        </React.Fragment>
+        </>
     )
   }
 }
@@ -269,4 +278,12 @@ function getDifferenceInDays(startDate, endDate) {
   return (endDate - startDate) / (24 * 60 * 60 * 1000)
 }
 
-export default withStyles(styles, {withTheme: true})(ViewRoom);
+const styledComponent = withStyles(styles, {withTheme: true})(ViewRoom);
+
+export default connect(state => ({
+  room: state.room.room.data,
+  isRoomLoading: state.room.room.pending,
+}), {
+  fetchRoom: room.action,
+  clearRoom: room.clearAction,
+})(styledComponent);
