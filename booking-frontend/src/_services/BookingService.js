@@ -8,7 +8,7 @@ export default class BookingService {
 	}
 
 	getBookings(params = {}) {
-		const url = new URL(apiUrl + '/bookings');
+		const url = new URL(`${apiUrl}/users/profile/bookings`);
 		Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
 		return authService.fetch(url).then(res => {

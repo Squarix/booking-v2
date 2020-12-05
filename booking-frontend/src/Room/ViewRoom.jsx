@@ -81,10 +81,9 @@ class ViewRoom extends React.Component {
   };
 
   handleDateChanged = (newStartDate, newEndDate) => {
-    const { endDate, startDate, todayPrice } = this.state;
+    const { endDate, startDate, price } = this.state;
     const start = newStartDate ? newStartDate : startDate;
     const end = newEndDate ? newEndDate : endDate;
-    const price = todayPrice;
     let days = 0;
 
     if (end && start) {
@@ -120,13 +119,12 @@ class ViewRoom extends React.Component {
     console.log('booking in proccess');
     const roomId = this.props.match.params.id;
     const params = {
-      roomId: roomId,
       arriveDate: this.state.startDate,
       endDate: this.state.endDate
     };
 
     let message;
-    roomService.bookRoom(params)
+    roomService.bookRoom(roomId, params)
         .then(res => {
           message = res.message;
         })
@@ -159,7 +157,7 @@ class ViewRoom extends React.Component {
                 <Carousel className={classes.carousel}>
                   {this.state.images.map(image =>
                       <div className={classes.roomImageDiv}>
-                        <img src={`${apiUrl}/${image.imagePath}`} className={classes.roomImage}/>
+                        <img src={`${apiUrl}/${image.path}`} className={classes.roomImage}/>
                       </div>
                   )}
                 </Carousel>
@@ -184,7 +182,7 @@ class ViewRoom extends React.Component {
                   </ListItem>
                   <ListItem className={classes.label}>
                     <AttachMoneyIcon/>
-                    <span>{' ~'}{this.state.todayPrice} per day</span>
+                    <span>{' ~'}{this.state.price} per day</span>
                   </ListItem>
                   <ListItem className={classes.label}>
                     <LocationOnIcon/>

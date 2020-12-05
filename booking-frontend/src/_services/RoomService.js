@@ -66,11 +66,11 @@ export default class RoomService {
     return fetch(url);
   }
 
-  bookRoom(params) {
-    const url = apiUrl + '/bookings/';
+  bookRoom(id, params) {
+    const url = `${apiUrl}/rooms/${id}/bookings`;
     return authService.fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ ...params })
+      body: JSON.stringify(params)
     });
   }
 

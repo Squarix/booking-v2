@@ -6,7 +6,10 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
-  Request, Param,
+  Request,
+  Param,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { Room } from './room.entity';
@@ -19,19 +22,61 @@ import { City } from '../city/city.entity';
 import { CityService } from '../city/city.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../users/user.entity';
+import { Booking } from '../booking/booking.entity';
+import { BookingService } from '../booking/booking.service';
+
+import { DATE_ALREADY_BOOKED_MESSAGE } from './constants';
+import { daysBetween } from './room.helper';
 
 @Controller('rooms')
 export class RoomController {
   constructor(
-    private readonly roomService: RoomService,
-    private readonly imageService: ImageService,
-    private readonly filterService: FilterService,
+    private readonly bookingService: BookingService,
     private readonly cityService: CityService,
+    private readonly filterService: FilterService,
+    private readonly imageService: ImageService,
+    private readonly roomService: RoomService,
   ) {}
 
   @Get(':id')
   findOne(@Param('id') id: number): Promise<Room> {
     return this.roomService.findOne(id);
+  }
+
+  @Get(':id/bookings')
+  async findBookings(@Param('id') id: number): Promise<Booking[]> {
+    const room = await this.roomService.findOne(id);
+    return this.bookingService.getRoomBookings(room);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/bookings')
+  async createBooking(
+    @Param('id') id: number,
+    @Body() body,
+    @Request() req,
+  ): Promise<Booking> {
+    const room = await this.roomService.findOne(id);
+    const thisDateBookings: Booking[] = await this.bookingService.getBookingBetweenDates(
+      body.arriveDate,
+      body.endDate,
+      room,
+    );
+
+    if (thisDateBookings.length) {
+      throw new HttpException(
+        DATE_ALREADY_BOOKED_MESSAGE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const totalDays: number = daysBetween(body.arriveDate, body.endDate);
+    return this.bookingService.create(
+      req.user,
+      body,
+      room.price * totalDays,
+      room,
+    );
   }
 
   @Get('/')

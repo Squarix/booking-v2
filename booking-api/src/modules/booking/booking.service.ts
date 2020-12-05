@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Booking } from './booking.entity';
 import { Room } from '../room/room.entity';
@@ -13,8 +13,6 @@ export class BookingService {
   constructor(
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
-    @InjectRepository(Room)
-    private readonly roomRepository: Repository<Room>,
   ) {}
 
   async create(
@@ -33,6 +31,10 @@ export class BookingService {
     return this.bookingRepository.save(booking);
   }
 
+  async getRoomBookings(room): Promise<Booking[]> {
+    return this.bookingRepository.find({ where: { room } });
+  }
+
   async getBookingBetweenDates(
     arriveDate: Date,
     endDate: Date,
@@ -49,6 +51,31 @@ export class BookingService {
           endDate: Between(arriveDate, endDate),
         },
       ],
+    });
+  }
+
+  async getUserBookings(
+    user: User,
+    arriveDate: string,
+    endDate: string,
+  ): Promise<Booking[]> {
+    let where: any = { user };
+    console.log(arriveDate, endDate);
+    if (arriveDate && endDate) {
+      where = {
+        arriveDate: MoreThanOrEqual(arriveDate),
+        endDate: LessThanOrEqual(endDate),
+        user,
+      };
+    } else if (endDate) {
+      where = { endDate: LessThanOrEqual(endDate), user };
+    } else if (arriveDate) {
+      where = { arriveDate: MoreThanOrEqual(arriveDate) };
+    }
+
+    return this.bookingRepository.find({
+      where,
+      relations: ['room', 'room.city'],
     });
   }
 }

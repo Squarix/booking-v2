@@ -9,7 +9,7 @@ import {
   Request,
   Put,
   UsePipes,
-  ValidationPipe,
+  ValidationPipe, Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -18,10 +18,15 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToClass } from 'class-transformer';
 import { ReturnUserDto } from './dto/return-user.dto';
+import { Booking } from '../booking/booking.entity';
+import { BookingService } from '../booking/booking.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly bookingService: BookingService,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
@@ -55,6 +60,16 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile/bookings')
+  findUserBookings(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Request() req,
+  ): Promise<Booking[]> {
+    return this.bookingService.getUserBookings(req.user, startDate, endDate);
   }
 
   @Delete(':id')
