@@ -17,21 +17,17 @@ export default class BookingService {
 	}
 
 	getRents() {
-		const url = apiUrl + '/rents/';
-		return authService.fetch(url).then(res => {
-			return Promise.resolve(res)
-		})
+		const url = `${apiUrl}/users/profile/rents/`;
+		return authService.fetch(url);
 	}
 
-	updateStatus(roomId, newStatus) {
-		const url = apiUrl + /rents/ + roomId;
+	updateStatus(bookingId, newStatus) {
+		const url = `${apiUrl}/bookings/${bookingId}`;
 		return authService.fetch(url, {
-			method: 'PUT',
+			method: 'PATCH',
 			body: JSON.stringify({
-				newStatus: newStatus,
+				newStatus,
 			}),
-		}).then(res => {
-			return Promise.resolve(res);
-		})
+		});
 	}
 }

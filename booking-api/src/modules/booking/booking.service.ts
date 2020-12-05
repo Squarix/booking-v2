@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
-import { Booking } from './booking.entity';
+import { Booking, BookingStatus } from './booking.entity';
 import { Room } from '../room/room.entity';
 import { User } from '../users/user.entity';
 
@@ -54,28 +54,50 @@ export class BookingService {
     });
   }
 
+  async getUserRents(user: User): Promise<Booking[]> {
+    return this.bookingRepository
+      .createQueryBuilder('booking')
+      .leftJoinAndSelect('booking.user', 'user')
+      .leftJoinAndSelect('booking.room', 'room')
+      .leftJoinAndSelect('room.city', 'room.city')
+      .where('room.userId = :userId', { userId: user.id })
+      .getMany();
+  }
+
   async getUserBookings(
     user: User,
     arriveDate: string,
     endDate: string,
   ): Promise<Booking[]> {
-    let where: any = { user };
-    console.log(arriveDate, endDate);
-    if (arriveDate && endDate) {
-      where = {
-        arriveDate: MoreThanOrEqual(arriveDate),
-        endDate: LessThanOrEqual(endDate),
-        user,
-      };
-    } else if (endDate) {
-      where = { endDate: LessThanOrEqual(endDate), user };
-    } else if (arriveDate) {
-      where = { arriveDate: MoreThanOrEqual(arriveDate) };
-    }
+    const where: any = { user };
+
+    if (arriveDate) where.arriveDate = MoreThanOrEqual(arriveDate);
+    if (endDate) where.endDate = LessThanOrEqual(endDate);
 
     return this.bookingRepository.find({
       where,
       relations: ['room', 'room.city'],
     });
+  }
+
+  async updateBookingStatus(
+    user: User,
+    newStatus: BookingStatus,
+  ): Promise<Booking> {
+    const booking: Booking = await this.bookingRepository
+      .createQueryBuilder('booking')
+      .leftJoinAndSelect('booking.room', 'room')
+      .where('room.userId = :userId', { userId: user.id })
+      .andWhere('booking.status = :status', { status: BookingStatus.pending })
+      .getOne();
+
+    if (!booking)
+      throw new HttpException(
+        'Pending booking not found',
+        HttpStatus.NOT_FOUND,
+      );
+
+    booking.status = newStatus;
+    return this.bookingRepository.save(booking);
   }
 }

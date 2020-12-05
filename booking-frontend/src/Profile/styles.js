@@ -3,7 +3,7 @@ const styles = theme => ({
 		color: '#00e676'
 	},
 
-	approving: {
+	pending: {
 		color: '#f9a825'
 	},
 

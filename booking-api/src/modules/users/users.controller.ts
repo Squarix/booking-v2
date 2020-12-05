@@ -9,7 +9,8 @@ import {
   Request,
   Put,
   UsePipes,
-  ValidationPipe, Query,
+  ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -70,6 +71,12 @@ export class UsersController {
     @Request() req,
   ): Promise<Booking[]> {
     return this.bookingService.getUserBookings(req.user, startDate, endDate);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile/rents')
+  findUserRents(@Request() req): Promise<Booking[]> {
+    return this.bookingService.getUserRents(req.user);
   }
 
   @Delete(':id')
