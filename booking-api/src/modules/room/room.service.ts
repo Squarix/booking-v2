@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Room } from './room.entity';
+import { Room, RoomStatus } from './room.entity';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { Image } from '../image/image.entity';
 import { Filter } from '../filter/filter.entity';
 import { City } from '../city/city.entity';
-import {User} from "../users/user.entity";
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class RoomService {
@@ -44,5 +44,14 @@ export class RoomService {
     room.user = user;
 
     return this.roomRepository.save(room);
+  }
+
+  async findAll(take = 21, skip = 0, order: string): Promise<[Room[], number]> {
+    return this.roomRepository.findAndCount({
+      skip,
+      take,
+      relations: ['image'],
+      where: { status: RoomStatus.published },
+    });
   }
 }

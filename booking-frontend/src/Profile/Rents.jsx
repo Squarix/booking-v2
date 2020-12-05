@@ -35,14 +35,10 @@ class Bookings extends React.Component {
   updateRents() {
     bookingService.getRents()
       .then(rents => {
-        console.log(rents);
         this.setState({
           rents: rents,
           isFetching: false
         })
-      })
-      .catch(error => {
-
       })
   }
 
@@ -57,7 +53,6 @@ class Bookings extends React.Component {
   }
 
   changeStatus(status, rentId) {
-    console.log(rentId, status);
     bookingService.updateStatus(rentId, status)
       .then(this.updateRents)
       .catch(e => {

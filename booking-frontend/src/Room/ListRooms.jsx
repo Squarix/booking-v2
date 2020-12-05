@@ -28,10 +28,10 @@ export default class ListRooms extends React.Component {
 
   getRooms = () => {
     this.setState({isLoading: true});
-    roomService.getRooms(this.state.limit, this.state.currentPage).then(rooms => {
-      console.log(rooms);
+    roomService.getRooms(this.state.limit, this.state.currentPage).then(([rooms, count]) => {
       this.setState({
         rooms: rooms,
+        roomsCount: count,
         isLoading: false,
       })
     })

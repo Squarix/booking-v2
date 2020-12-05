@@ -10,6 +10,7 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { Room } from './room.entity';
@@ -80,8 +81,12 @@ export class RoomController {
   }
 
   @Get('/')
-  findAll(): Promise<Room[]> {
-    return new Promise<Room[]>(() => []);
+  findAll(
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+    @Query('order') order: string,
+  ) {
+    return this.roomService.findAll(limit, offset, order);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Booking, BookingStatus } from './booking.entity';
-import { Room } from '../room/room.entity';
+import {Room, RoomStatus} from '../room/room.entity';
 import { User } from '../users/user.entity';
 
 import { CreateBookingDto } from './dto/create-booking.dto';
