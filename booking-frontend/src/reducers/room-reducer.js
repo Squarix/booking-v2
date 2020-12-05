@@ -9,7 +9,25 @@ export const room = asyncField({
   },
 });
 
+export const bookings = asyncField({
+  reducerTemplate: asyncField.REDUCER_TEMPLATE.MANY_MODELS,
+  actionOptions: {
+    uri: 'rooms',
+    method: asyncField.METHODS.GET
+  }
+})
+
+export const createBooking = asyncField({
+  reducerTemplate: asyncField.REDUCER_TEMPLATE.CREATE_MODEL,
+  actionOptions: {
+    uri: 'rooms',
+    method: asyncField.METHODS.POST
+  }
+})
+
 
 export default combineFieldReducers({
   room,
+  bookings,
+  createBooking,
 });

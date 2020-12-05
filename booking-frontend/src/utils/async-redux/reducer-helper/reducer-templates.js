@@ -24,7 +24,7 @@ export class ManyModelsTemplate extends BaseReducerTemplate {
   onSuccess(state, action) {
     return {
       ...state,
-      data: action.payload.results,
+      data: action.payload,
       count: action.payload.count,
       pending: false,
       error: null,

@@ -62,6 +62,7 @@ export default class AsyncAction extends AbstractAction {
       urlParams = new URLSearchParams(),
       body = undefined,
       id = null,
+      collection = null,
       requestOptions = {},
     } = {}) => async dispatch => {
 
@@ -75,6 +76,8 @@ export default class AsyncAction extends AbstractAction {
       let uri = `${this.baseUri}/`;
 
       if (id) uri += `${id}/`;
+
+      if (collection) uri += `${collection}/`
 
       if (urlSearchParams.toString()) uri += `?${urlSearchParams}`;
 
