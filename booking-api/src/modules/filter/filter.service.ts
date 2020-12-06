@@ -42,4 +42,14 @@ export class FilterService {
 
     return filter;
   }
+
+  async getFilters(limit: number = 20): Promise<Filter[]> {
+    return this.filterRepository.createQueryBuilder('filter')
+      .innerJoinAndSelect('filter.rooms', 'rooms')
+      .loadRelationCountAndMap("filter.roomsCount", "filter.rooms")
+      .orderBy("filter.id", "DESC")
+      .select(['filter.id', 'filter.filter', 'filter.categoryId'])
+      .limit(limit)
+      .getMany();
+  }
 }

@@ -3,9 +3,11 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import thunkMiddleware from 'redux-thunk';
 
 import RoomReducer from '../reducers/room-reducer';
+import FilterReducer from '../reducers/filter-reducer';
 
 const rootReducer = combineReducers({
   room: RoomReducer,
+  filter: FilterReducer,
 });
 
 function createReduxStore() {

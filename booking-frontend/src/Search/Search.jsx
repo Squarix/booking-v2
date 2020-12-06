@@ -1,70 +1,25 @@
 import React from 'react'
-import withStyles from '@material-ui/core/styles/withStyles';
+import { connect } from "react-redux";
+
 import styles from './styles';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-import SearchService from '../_services/SearchService';
-import Grid from '@material-ui/core/Grid';
-import Menu from '../Layouts/Menu';
-import Container from '@material-ui/core/Container';
-import TextField from '@material-ui/core/TextField';
-import Slider from '@material-ui/core/Slider';
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-
-import RoomCard from '../Room/components/RoomCard';
 import Chip from "@material-ui/core/Chip";
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Typography from "@material-ui/core/Typography";
 
-const searchService = new SearchService();
+import Menu from '../Layouts/Menu';
+import RoomCard from '../Room/components/RoomCard';
 
-const AirbnbSlider = withStyles({
-  root: {
-    color: '#3a8589',
-    height: 3,
-    padding: '13px 0',
-  },
-  thumb: {
-    height: 27,
-    width: 27,
-    backgroundColor: '#fff',
-    border: '1px solid currentColor',
-    marginTop: -12,
-    marginLeft: -13,
-    boxShadow: '#ebebeb 0px 2px 2px',
-    '&:focus,&:hover,&$active': {
-      boxShadow: '#ccc 0px 2px 3px 1px',
-    },
-    '& .bar': {
-      // display: inline-block !important;
-      height: 9,
-      width: 1,
-      backgroundColor: 'currentColor',
-      marginLeft: 1,
-      marginRight: 1,
-    },
-  },
-  active: {},
-  valueLabel: {
-    left: 'calc(-50% + 4px)',
-  },
-  track: {
-    height: 3,
-  },
-  rail: {
-    color: '#d8d8d8',
-    opacity: 1,
-    height: 3,
-  },
-})(Slider);
+import { publicRooms } from "../reducers/room-reducer";
+import { filters } from "../reducers/filter-reducer";
 
-function AirbnbThumbComponent(props) {
-  return (
-      <span {...props}>
-      <span className='bar'/>
-      <span className='bar'/>
-      <span className='bar'/>
-    </span>
-  );
-}
+import ApartmentIcon from '@material-ui/icons/Apartment';
+import GroupIcon from "@material-ui/icons/Group";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import BookingTextField from "./components/text-field";
 
 
 class Search extends React.Component {
@@ -76,8 +31,8 @@ class Search extends React.Component {
     priceMax: 1000,
     priceMin: 0,
     priceValues: [0, 1000],
-    filters: [],
-    guestsAmount: '',
+    selectedFilters: {},
+    guests: '',
     size: '',
     address: '',
     description: '',
@@ -99,144 +54,117 @@ class Search extends React.Component {
   }
 
   handleSearch = () => {
-    const stateValues = {
-      description: this.state.description,
-      guestsAmount: Number.parseInt(this.state.guestsAmount),
-      size: Number.parseInt(this.state.size),
-      address: this.state.address,
-      filters: JSON.stringify(this.state.searchFilters.filter(f => f.selected) || []),
-    };
+    const { guests, size, address, rooms, selectedFilters } = this.state;
+    const params = new URLSearchParams();
 
-    let params = {};
-    console.log(stateValues);
-    Object.keys(stateValues).map(key => {
-      const value = stateValues[key];
-      if (value)
-        params = Object.assign(params, {[key]: value})
-    });
+    const requestParams = Object
+      .keys({ guests, size, address, rooms })
+      .filter(key => this.state[key])
+      .reduce((acc, cur) => {
+        acc[cur] = this.state[cur];
+        return acc;
+      }, {});
 
-    console.log(params);
-    searchService
-        .doSearch(params)
-        .then(res => this.setState({rooms: res}));
+    requestParams.selectedFilters = Object.keys(selectedFilters).filter(key => selectedFilters[key]);
+
+    Object.keys(requestParams).forEach(key => {
+      params.append(key, requestParams[key]);
+    })
+
+    this.props.fetchRooms({ urlParams: params });
   }
 
   chipClicked = id => {
-    const { searchFilters } = this.state;
-    const filter = searchFilters.find(f => f.id === id)
-    filter.selected = !filter.selected;
+    const { selectedFilters } = this.state;
+    selectedFilters[id] = !selectedFilters[id];
 
-    this.setState({ searchFilters });
+    this.setState({ selectedFilters });
   }
 
   componentDidMount() {
-    searchService.getFilters()
-        .then(searchFilters => {
-          console.log(searchFilters);
-          this.setState({searchFilters})
-        })
+    this.props.fetchFilters();
+    this.props.fetchRooms();
+  }
+
+  getFilters() {
+    const { selectedFilters } = this.state;
+    const getVariant = selected => selected ? 'default' : 'outlined';
+    return this.props.filters?.map(({ id, filter }) =>
+      <Chip
+        color="primary"
+        key={id}
+        onClick={() => this.chipClicked(id)}
+        label={filter}
+        variant={getVariant(selectedFilters[id])}
+      />
+    )
   }
 
   render() {
-    const {classes} = this.props;
+    const { classes } = this.props;
 
     return (
-        <>
-          <Menu/>
-          <Container className={classes.container}>
-            <Grid container>
-              <Grid item xs={12} md={3}>
-                <Typography variant={'h5'}>Search params</Typography>
-                <div className={classes.margin}/>
-                <TextField
-                    id='outlined-error`'
-                    label='Guests Amount'
-                    placeholder='Guest amount'
-                    name='guestsAmount'
-                    value={this.state.guestsAmount}
-                    onChange={this.handleInputChange}
-                    className={classes.textField}
-                    margin='normal'
-                    variant='outlined'
-                />
-                <TextField
-                    id='outlined-error'
-                    label='Rooms amount'
-                    name='size'
-                    placeholder='Rooms  '
-                    value={this.state.roomsAmount}
-                    onChange={this.handleInputChange}
-                    className={classes.textField}
-                    margin='normal'
-                    variant='outlined'
-                />
-                <TextField
-                    id='outlined-error'
-                    label='Address'
-                    name='address'
-                    value={this.state.address}
-                    onChange={this.handleInputChange}
-                    placeholder='enter your address'
-                    className={classes.textField}
-                    margin='normal'
-                    variant='outlined'
-                />
-                <TextField
-                    id='outlined-error'
-                    label='Description'
-                    name='description'
-                    placeholder='description'
-                    value={this.state.description}
-                    onChange={this.handleInputChange}
-                    className={classes.textField}
-                    margin='normal'
-                    variant='outlined'
-                />
-                <div className={classes.chipsContainer}>
-                  {this.state.searchFilters?.map(filter => (
-                      <Chip
-                          color="primary"
-                          key={filter.id}
-                          onClick={() => this.chipClicked(filter.id)}
-                          label={filter.filter}
-                          variant={filter.selected ? 'default' : 'outlined'}
-                      />
-                  ))}
-                </div>
-                <div className={classes.margin}/>
-                {/*<Typography gutterBottom>Price</Typography>*/}
-                {/*<AirbnbSlider*/}
-                {/*	ThumbComponent={AirbnbThumbComponent}*/}
-                {/*	onChange={this.handleSliderChange}*/}
-                {/*	value={this.state.priceValues}*/}
-                {/*	getAriaLabel={index => (index === 0 ? 'Minimum price' : 'Maximum price')}*/}
-                {/*	min={this.state.priceMin}*/}
-                {/*	max={this.state.priceMax}*/}
-                {/*	valueLabelDisplay='on'*/}
-                {/*	className={classes.textField}*/}
-                {/*/>*/}
-                <div className={classes.margin}/>
-                <Button variant='outlined' color='primary' className={classes.button} onClick={this.handleSearch}>
-                  Search
-                </Button>
-              </Grid>
-              <Grid item xs={12} md={9}>
-                <Grid container>
-                  {
-                    this.state.rooms.map(room =>
-                        <Grid key={room._id} xs={12} md={6} item className={classes.resultItem}>
-                          <RoomCard id={room._id} {...room._source}/>
-                        </Grid>
-                    )
-                  }
-                </Grid>
+      <>
+        <Menu/>
+        <Container className={classes.container}>
+          <Grid container>
+            <Grid item xs={12} md={3}>
+              <Typography variant="h5">Search params</Typography>
+              <div className={classes.margin}/>
+              <BookingTextField
+                name="guests"
+                value={this.state.guests}
+                onChange={this.handleInputChange}
+                className={classes.textField}
+                icon={<GroupIcon />}
+              />
+              <BookingTextField
+                name="rooms"
+                placeholder="Rooms amount"
+                value={this.state.rooms}
+                onChange={this.handleInputChange}
+                className={classes.textField}
+                icon={<ApartmentIcon />}
+              />
+              <BookingTextField
+                name="address"
+                value={this.state.address}
+                onChange={this.handleInputChange}
+                className={classes.textField}
+                icon={<LocationOnIcon />}
+              />
+              <div className={classes.chipsContainer}>
+                {this.getFilters()}
+              </div>
+              <div className={classes.margin}/>
+              <Button variant='outlined' color='primary' className={classes.button} onClick={this.handleSearch}>
+                Search
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={9}>
+              <Grid container>
+                {this.props.rooms?.map(room =>
+                  <Grid key={room.id} xs={12} md={6} item className={classes.resultItem}>
+                    <RoomCard {...room}/>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
-          </Container>
-        </>
+          </Grid>
+        </Container>
+      </>
     )
   }
 }
 
+const styledComponent = withStyles(styles, { withTheme: true })(Search);
 
-export default withStyles(styles, {withTheme: true})(Search);
+export default connect(state => ({
+  filters: state.filter.filters.data,
+  rooms: state.room.publicRooms.data
+}), {
+  fetchRooms: publicRooms.action,
+  clearRooms: publicRooms.clearAction,
+  fetchFilters: filters.action,
+  clearFilters: filters.clearAction,
+})(styledComponent);

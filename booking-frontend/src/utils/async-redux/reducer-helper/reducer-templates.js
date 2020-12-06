@@ -22,10 +22,11 @@ export class ManyModelsTemplate extends BaseReducerTemplate {
   }
 
   onSuccess(state, action) {
+    const [data, count] = Array.isArray(action.payload) ? [action.payload, 0] : [action.payload.result, action.payload.count] ;
     return {
       ...state,
-      data: action.payload,
-      count: action.payload.count,
+      data,
+      count,
       pending: false,
       error: null,
     };

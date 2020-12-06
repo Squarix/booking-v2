@@ -6,54 +6,65 @@ import RoomCard from "./components/RoomCard";
 import {Container} from "@material-ui/core";
 import Footer from "../Layouts/Footer";
 import Menu from "../Layouts/Menu";
+import { connect } from "react-redux";
+import { publicRooms } from "../reducers/room-reducer";
 
 const roomService = new RoomService();
 
-export default class ListRooms extends React.Component {
+class ListRooms extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       currentPage: 1,
       limit: 21,
-      rooms: [],
-      isLoading: true,
     };
-
   }
 
 
   componentDidMount() {
-    this.getRooms()
+    this.props.getPublicRooms({ urlParams: this.getSearchParams() });
   }
 
-  getRooms = () => {
-    this.setState({isLoading: true});
-    roomService.getRooms(this.state.limit, this.state.currentPage).then(([rooms, count]) => {
-      this.setState({
-        rooms: rooms,
-        roomsCount: count,
-        isLoading: false,
-      })
-    })
-  };
+  getSearchParams = () => {
+    const { limit, currentPage} = this.state;
+    const params = new URLSearchParams();
+    params.append('limit', limit);
+    params.append('offset', String(limit * (currentPage - 1)));
+
+    return params;
+  }
+
+  getRooms() {
+    const { rooms, roomsLoading } = this.props;
+    if (roomsLoading) return <CircularProgress/>;
+
+    return rooms.map(room => (
+      <Grid key={room.id} item xs={12} sm={6} md={4}>
+        <RoomCard {...room} />
+      </Grid>
+    ))
+  }
 
   render() {
     return (
-        <React.Fragment>
+        <>
           <Menu/>
           <Container fixed>
             <Grid container spacing={4} style={{padding: '50px 0 100px 0'}}>
-              {!this.state.isLoading ?
-                  this.state.rooms.map((room, index) =>
-                      <Grid key={index} item xs={12} sm={6} md={4}>
-                        <RoomCard {...room} />
-                      </Grid>)
-                  : <CircularProgress/>
-              }
+              {this.getRooms()}
             </Grid>
           </Container>
           <Footer/>
-        </React.Fragment>
+        </>
     )
   }
 }
+
+
+export default connect(state => ({
+  rooms: state.room.publicRooms.data,
+  roomsLoading: state.room.publicRooms.pending,
+}), {
+  getPublicRooms: publicRooms.action,
+  clearPublicRooms: publicRooms.clearAction,
+})(ListRooms);

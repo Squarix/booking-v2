@@ -46,12 +46,16 @@ export class RoomService {
     return this.roomRepository.save(room);
   }
 
-  async findAll(take = 21, skip = 0, order: string): Promise<[Room[], number]> {
-    return this.roomRepository.findAndCount({
+  async findAll(take = 21, skip = 0, order: string): Promise<ManyModelDto<Room>> {
+    const [result, count] = await this.roomRepository.findAndCount({
       skip,
       take,
       relations: ['image'],
       where: { status: RoomStatus.published },
     });
+
+    return {
+      result, count
+    }
   }
 }

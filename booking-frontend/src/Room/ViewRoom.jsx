@@ -131,7 +131,12 @@ class ViewRoom extends React.Component {
     if (!open) return null;
 
     return (
-      <Snackbar open={open} autoHideDuration={6000} onClose={this.closeSnackbar}>
+      <Snackbar
+        anchorOrigin={{ horizontal: "center", vertical: "top"}}
+        autoHideDuration={6000}
+        onClose={this.closeSnackbar}
+        open={open}
+      >
         <Alert severity={type} onClose={this.closeSnackbar}>
           {message}
         </Alert>
@@ -235,9 +240,9 @@ class ViewRoom extends React.Component {
                 <Redirect to={'/profile/bookings'}/> : ''
             }
           </Grid>
-          {this.getSnackBar()}
         </Container>
         <Footer/>
+        {this.getSnackBar()}
       </>
     )
   }

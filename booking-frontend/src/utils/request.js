@@ -1,3 +1,5 @@
+import Cookie from 'js-cookie';
+
 import { apiUrl } from "../_services/config";
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong';
@@ -15,6 +17,8 @@ export default function request(requestProps) {
   if (requestProps.contentType) contentType = requestProps.contentType;
 
   if (contentType) headers['Content-Type'] = contentType;
+
+  if (Cookie.get('id_token')) headers['Authorization'] = `Bearer ${Cookie.get('id_token')}`;
 
 
   const fetchOptions = {
