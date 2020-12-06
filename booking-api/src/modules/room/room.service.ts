@@ -40,6 +40,8 @@ export class RoomService {
     room.filters = filters;
     room.image = previewImage;
     room.images = images;
+    room.lat = newRoom.lat;
+    room.lng = newRoom.lng;
     room.price = newRoom.price;
     room.size = newRoom.size;
     room.user = user;
@@ -58,7 +60,7 @@ export class RoomService {
   ): Promise<ManyModelDto<Room>> {
     const query = this.roomRepository.createQueryBuilder('r')
       .leftJoinAndSelect('r.image', 'image')
-      .innerJoinAndSelect('r.filters', 'filters')
+      .leftJoinAndSelect('r.filters', 'filters')
       .skip(skip)
       .take(take)
       .where('status = :status', { status: RoomStatus.published });

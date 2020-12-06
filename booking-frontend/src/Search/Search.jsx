@@ -24,9 +24,11 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import SortIcon from '@material-ui/icons/Sort';
 
 import BookingTextField from "./components/text-field";
-import { MenuItem, Select } from "@material-ui/core";
+import { MenuItem, Select, Switch } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import { menuProps } from "./constants";
+
+import MapComponent from "./components/google-map";
 
 
 class Search extends React.Component {
@@ -46,6 +48,7 @@ class Search extends React.Component {
     page: 1,
     sortingSelect: false,
     order: '',
+    viewMode: 'default',
 
     rooms: []
   }
@@ -109,6 +112,24 @@ class Search extends React.Component {
     )
   }
 
+  getItemsContainer() {
+    const { viewMode } = this.state;
+    if (viewMode === 'default')
+      return this.props.rooms?.map(room =>
+        <Grid key={room.id} xs={12} md={6} item style={{ padding: '20px' }}>
+          <Index {...room}/>
+        </Grid>
+      )
+
+    const markers = this.props.rooms?.map(
+      room => ({ lat: room.lat, lng: room.lng, infoBox: <Index {...room} /> })
+    );
+
+    return (
+      <MapComponent markers={markers} />
+    );
+  }
+
   openCloseSortMenu = () => {
     const { sortingSelect } = this.state;
     this.setState({ sortingSelect: !sortingSelect });
@@ -121,6 +142,22 @@ class Search extends React.Component {
     });
   }
 
+  changeViewMode = ({ target: { checked }}) => {
+    this.setState({ viewMode: checked ? 'map' : 'default' });
+  }
+
+  getViewModeSwitcher() {
+    return (
+      <Grid component="label" container alignItems="center" spacing={1}>
+        <Grid item>Default</Grid>
+        <Grid item>
+          <Switch onChange={this.changeViewMode} />
+        </Grid>
+        <Grid item>Map</Grid>
+      </Grid>
+    );
+  }
+
   render() {
     const { classes } = this.props;
     const { sortingSelect } = this.state;
@@ -131,6 +168,7 @@ class Search extends React.Component {
         <Container className={classes.container}>
           <Grid container>
             <Grid item xs={12} className="list-rooms__sort-container">
+              {this.getViewModeSwitcher()}
               <Select
                 open={sortingSelect}
                 className="list-rooms__sort-select"
@@ -138,8 +176,8 @@ class Search extends React.Component {
                 onClose={this.openCloseSortMenu}
                 MenuProps={menuProps}
               >
-                <MenuItem value="ASC">Price ascending <ArrowUpwardIcon /></MenuItem>
-                <MenuItem value="DESC">Price descending <ArrowDownwardIcon /></MenuItem>
+                <MenuItem value="ASC">Price ascending <ArrowUpwardIcon/></MenuItem>
+                <MenuItem value="DESC">Price descending <ArrowDownwardIcon/></MenuItem>
                 <MenuItem value="">Price default </MenuItem>
               </Select>
               <IconButton
@@ -148,7 +186,7 @@ class Search extends React.Component {
                 component="span"
                 onClick={this.openCloseSortMenu}
               >
-                <SortIcon />
+                <SortIcon/>
               </IconButton>
             </Grid>
             <Grid item xs={12} md={3}>
@@ -157,7 +195,7 @@ class Search extends React.Component {
                 value={this.state.guests}
                 onChange={this.handleInputChange}
                 className={classes.textField}
-                icon={<GroupIcon />}
+                icon={<GroupIcon/>}
               />
               <BookingTextField
                 name="rooms"
@@ -165,14 +203,14 @@ class Search extends React.Component {
                 value={this.state.rooms}
                 onChange={this.handleInputChange}
                 className={classes.textField}
-                icon={<ApartmentIcon />}
+                icon={<ApartmentIcon/>}
               />
               <BookingTextField
                 name="address"
                 value={this.state.address}
                 onChange={this.handleInputChange}
                 className={classes.textField}
-                icon={<LocationOnIcon />}
+                icon={<LocationOnIcon/>}
               />
               <div className={classes.chipsContainer}>
                 {this.getFilters()}
@@ -184,11 +222,7 @@ class Search extends React.Component {
             </Grid>
             <Grid item xs={12} md={9}>
               <Grid container>
-                {this.props.rooms?.map(room =>
-                  <Grid key={room.id} xs={12} md={6} item className={classes.resultItem}>
-                    <Index {...room}/>
-                  </Grid>
-                )}
+                {this.getItemsContainer()}
               </Grid>
             </Grid>
           </Grid>

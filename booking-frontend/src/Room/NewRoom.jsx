@@ -19,6 +19,7 @@ import Slide from "@material-ui/core/Slide";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Menu from "../Layouts/Menu";
 import Footer from "../Layouts/Footer";
+import MapComponent from "../Search/components/google-map";
 
 const roomService = new RoomService();
 
@@ -207,6 +208,8 @@ class NewRoom extends React.Component {
       guestsAmount: this.state.guestsAmount,
       price: this.state.price,
       city: this.state.selectedCity,
+      lat: this.state.lat,
+      lng: this.state.lng,
     };
 
     const { filters, imageFiles, mainImage } = this.state;
@@ -234,6 +237,17 @@ class NewRoom extends React.Component {
     })
   };
 
+  onMapSelection = ({ lat, lng }) => {
+    this.reverseGeocoding(lat(), lng());
+    this.setState({ lat: lat(), lng: lng() });
+  }
+
+  reverseGeocoding = (lat, lng) => {
+    fetch(`http://api.positionstack.com/v1/reverse?access_key=b09129e912cd202afdea9fcaf3fbbd38&query=${lat},${lng}`)
+      .then(data => data.json())
+      .then(({ data }) => this.setState({ selectedCity: data[0].region }))
+    ;
+  }
 
   render() {
     const { classes } = this.props;
@@ -266,6 +280,7 @@ class NewRoom extends React.Component {
                       City
                     </InputLabel>
                     <OutlinedInput
+                      disabled
                       id="component-outlined"
                       labelWidth={50}
                       name={'selectedCity'}
@@ -427,6 +442,9 @@ class NewRoom extends React.Component {
                       </Grid>
                     )}
                   </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <MapComponent selectable onSelect={this.onMapSelection} />
                 </Grid>
                 <Grid item xs={12} className={classes.gridItem}>
                   {this.state.isFetching ?

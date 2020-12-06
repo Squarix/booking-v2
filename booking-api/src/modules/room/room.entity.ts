@@ -54,6 +54,15 @@ export class Room {
   @IsNotEmpty()
   price: number;
 
+
+  @Column({type:'float'})
+  @IsNotEmpty()
+  lng: number
+
+  @Column({type:'float'})
+  @IsNotEmpty()
+  lat: number
+
   @ManyToOne(() => City, (city) => city.rooms)
   city: City;
 
