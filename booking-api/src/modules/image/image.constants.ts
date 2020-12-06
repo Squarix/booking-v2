@@ -5,6 +5,5 @@ export const FILE_PATH = path.join(
   '..',
   '..',
   '..',
-  'src',
   'uploads',
 );

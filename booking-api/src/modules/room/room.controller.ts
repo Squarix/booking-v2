@@ -84,7 +84,7 @@ export class RoomController {
   findAll(
     @Query('limit') limit: number,
     @Query('offset') offset: number,
-    @Query('order') order: string,
+    @Query('order') order: 'ASC' | 'DESC',
     @Query('selectedFilters') filters: string,
     @Query('address') address: string,
     @Query('guests') guests: number,

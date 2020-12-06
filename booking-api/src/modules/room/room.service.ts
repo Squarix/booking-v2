@@ -50,7 +50,7 @@ export class RoomService {
   async findAll(
     take = 21,
     skip = 0,
-    order: string,
+    order: 'ASC' | 'DESC',
     filters: string,
     address: string,
     guests: number,
@@ -71,14 +71,10 @@ export class RoomService {
     if (guests) query.andWhere('r."guestsAmount" = :guests', { guests });
     if (rooms) query.andWhere('size = :rooms', {rooms});
 
+    if (order) query.orderBy('r.price', order);
+
 
     const [result, count] = await query.getManyAndCount();
-    // const [result, count] = await this.roomRepository.findAndCount({
-    //   skip,
-    //   take,
-    //   relations: ['image', 'filters'],
-    //   where,
-    // });
 
     return {
       result, count

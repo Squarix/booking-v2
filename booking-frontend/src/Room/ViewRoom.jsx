@@ -2,7 +2,6 @@ import 'date-fns';
 import React from 'react';
 import Grid from "@material-ui/core/Grid";
 import { Container, Snackbar, Typography } from "@material-ui/core";
-import RoomService from '../_services/RoomService';
 import styles from './styles';
 import withStyles from "@material-ui/core/styles/withStyles";
 import ListItem from "@material-ui/core/ListItem";

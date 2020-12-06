@@ -1,0 +1,24 @@
+.room-card__action-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 15px;
+}
+
+.room-card__action-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.room-card__tooltip {
+    color: #FFF;
+    font-size: 16px;
+    padding: 10px 5px;
+    display: block;
+    text-decoration: none;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

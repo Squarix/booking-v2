@@ -1,0 +1,11 @@
+.list-rooms__sort-select {
+    display: block;
+    visibility: hidden;
+    width: 1px;
+}
+
+.list-rooms__sort-container {
+    display: flex;
+    justify-content: flex-end;
+}
+

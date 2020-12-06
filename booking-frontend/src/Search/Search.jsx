@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from "react-redux";
 
+import './index.css';
 import styles from './styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 
@@ -8,18 +9,24 @@ import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Typography from "@material-ui/core/Typography";
 
 import Menu from '../Layouts/Menu';
-import RoomCard from '../Room/components/RoomCard';
+import Index from '../Room/components/room-card';
 
 import { publicRooms } from "../reducers/room-reducer";
 import { filters } from "../reducers/filter-reducer";
 
 import ApartmentIcon from '@material-ui/icons/Apartment';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import GroupIcon from "@material-ui/icons/Group";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
+import SortIcon from '@material-ui/icons/Sort';
+
 import BookingTextField from "./components/text-field";
+import { MenuItem, Select } from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import { menuProps } from "./constants";
 
 
 class Search extends React.Component {
@@ -37,6 +44,8 @@ class Search extends React.Component {
     address: '',
     description: '',
     page: 1,
+    sortingSelect: false,
+    order: '',
 
     rooms: []
   }
@@ -54,11 +63,11 @@ class Search extends React.Component {
   }
 
   handleSearch = () => {
-    const { guests, size, address, rooms, selectedFilters } = this.state;
+    const { guests, size, address, rooms, selectedFilters, order } = this.state;
     const params = new URLSearchParams();
 
     const requestParams = Object
-      .keys({ guests, size, address, rooms })
+      .keys({ guests, size, address, rooms, order })
       .filter(key => this.state[key])
       .reduce((acc, cur) => {
         acc[cur] = this.state[cur];
@@ -100,14 +109,48 @@ class Search extends React.Component {
     )
   }
 
+  openCloseSortMenu = () => {
+    const { sortingSelect } = this.state;
+    this.setState({ sortingSelect: !sortingSelect });
+  }
+
+  onSortChange = ({ target: { value } }) => {
+    this.setState({ order: value }, () => {
+      this.handleSearch();
+      this.openCloseSortMenu();
+    });
+  }
+
   render() {
     const { classes } = this.props;
+    const { sortingSelect } = this.state;
 
     return (
       <>
         <Menu/>
         <Container className={classes.container}>
           <Grid container>
+            <Grid item xs={12} className="list-rooms__sort-container">
+              <Select
+                open={sortingSelect}
+                className="list-rooms__sort-select"
+                onChange={this.onSortChange}
+                onClose={this.openCloseSortMenu}
+                MenuProps={menuProps}
+              >
+                <MenuItem value="ASC">Price ascending <ArrowUpwardIcon /></MenuItem>
+                <MenuItem value="DESC">Price descending <ArrowDownwardIcon /></MenuItem>
+                <MenuItem value="">Price default </MenuItem>
+              </Select>
+              <IconButton
+                aria-label="change sorting"
+                color="primary"
+                component="span"
+                onClick={this.openCloseSortMenu}
+              >
+                <SortIcon />
+              </IconButton>
+            </Grid>
             <Grid item xs={12} md={3}>
               <BookingTextField
                 name="guests"
@@ -143,7 +186,7 @@ class Search extends React.Component {
               <Grid container>
                 {this.props.rooms?.map(room =>
                   <Grid key={room.id} xs={12} md={6} item className={classes.resultItem}>
-                    <RoomCard {...room}/>
+                    <Index {...room}/>
                   </Grid>
                 )}
               </Grid>
