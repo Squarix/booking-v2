@@ -8,6 +8,7 @@
 
 .room-card__action-item {
     display: flex;
+    padding: 0 5px;
     justify-content: center;
     align-items: center;
 }

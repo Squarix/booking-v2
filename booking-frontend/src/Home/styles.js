@@ -30,7 +30,7 @@ const styles = makeStyles(theme => ({
 		position: 'relative',
 		backgroundColor: theme.palette.grey[800],
 		color: theme.palette.common.white,
-		height: 'calc(100vh - 112px)',
+		height: 'calc(100vh - 64px)',
 		backgroundImage: 'url(/background.jpg)',
 		filter: 'blur(0.2px)',
 		backgroundSize: 'cover',
