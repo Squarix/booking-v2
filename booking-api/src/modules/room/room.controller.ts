@@ -85,8 +85,12 @@ export class RoomController {
     @Query('limit') limit: number,
     @Query('offset') offset: number,
     @Query('order') order: string,
+    @Query('selectedFilters') filters: string,
+    @Query('address') address: string,
+    @Query('guests') guests: number,
+    @Query('rooms') rooms: number,
   ) {
-    return this.roomService.findAll(limit, offset, order);
+    return this.roomService.findAll(limit, offset, order, filters, address, guests, rooms);
   }
 
   @UseGuards(JwtAuthGuard)

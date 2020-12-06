@@ -109,8 +109,6 @@ class Search extends React.Component {
         <Container className={classes.container}>
           <Grid container>
             <Grid item xs={12} md={3}>
-              <Typography variant="h5">Search params</Typography>
-              <div className={classes.margin}/>
               <BookingTextField
                 name="guests"
                 value={this.state.guests}

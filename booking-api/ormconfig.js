@@ -7,4 +7,5 @@ module.exports = {
   database: 'booking-api',
   entities: ['dist/**/*.entity{.ts,.js}'],
   synchronize: true,
+  logging: true,
 };
