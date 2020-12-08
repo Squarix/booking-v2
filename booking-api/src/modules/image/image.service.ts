@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Image } from './image.entity';
-import { FILE_PATH } from './image.constants';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as gm from 'gm';
 import { v4 as uuid } from 'uuid';
+
+import { Image } from './image.entity';
+import { FILE_PATH } from './image.constants';
 
 @Injectable()
 export class ImageService {
@@ -23,13 +25,17 @@ export class ImageService {
   }
 
   async writeImage(buffer: Buffer, filename: string): Promise<string> {
-    const uniqueFileName = `${uuid()}~~${filename}`;
-    await fs.promises.writeFile(
-      path.join(FILE_PATH, uniqueFileName),
-      buffer,
-      'binary',
-    );
+    return new Promise<string>((resolve, reject) => {
+      const uniqueFileName = `${uuid()}~~${filename}`;
 
-    return uniqueFileName;
+      gm(buffer)
+        .resize('1024', '768', '^')
+        .gravity('Center')
+        .crop('1024', '768')
+        .write(path.join(FILE_PATH, uniqueFileName), function (err) {
+          if (!err) resolve(uniqueFileName);
+          reject(err);
+        });
+    })
   }
 }

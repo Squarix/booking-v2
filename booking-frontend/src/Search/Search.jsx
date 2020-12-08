@@ -68,9 +68,12 @@ class Search extends React.Component {
     })
   }
 
-  handleSearch = () => {
-    const { guests, size, address, rooms, selectedFilters, order } = this.state;
+  handleSearch = async () => {
+    const { guests, size, address, rooms, selectedFilters, order, page, limit } = this.state;
     const params = new URLSearchParams();
+
+    params.append('offset', String((page - 1) * limit));
+    params.append('limit', limit);
 
     const requestParams = Object
       .keys({ guests, size, address, rooms, order })
@@ -86,7 +89,8 @@ class Search extends React.Component {
       params.append(key, requestParams[key]);
     })
 
-    this.props.fetchRooms({ urlParams: params });
+    await this.props.fetchRooms({ urlParams: params });
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth'});
   }
 
   chipClicked = id => {
@@ -115,6 +119,10 @@ class Search extends React.Component {
     )
   }
 
+  onPageChange = page => {
+    this.setState({ page }, this.handleSearch);
+  }
+
   getPagination() {
     const { viewMode, page, limit } = this.state;
     const { roomsCount } = this.props;
@@ -122,7 +130,13 @@ class Search extends React.Component {
 
     return (
       <div className="list-rooms__pagination">
-        <Pagination size="large" count={roomsCount / limit + 1} page={page} color="primary" />
+        <Pagination
+          size="large"
+          onChange={(e, selectedPage) => this.onPageChange(selectedPage)}
+          count={Math.ceil(roomsCount / limit)}
+          page={page}
+          color="primary"
+        />
       </div>
     )
   }

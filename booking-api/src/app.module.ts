@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Connection } from 'typeorm';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
@@ -14,9 +14,7 @@ import { ImageModule } from './modules/image/image.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { CategoryModule } from './modules/category/category.module';
 import { FilterModule } from './modules/filter/filter.module';
-import { MulterModule } from '@nestjs/platform-express';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -33,6 +31,7 @@ import { join } from 'path';
     MulterModule.register({
       dest: '../uploads',
     }),
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
