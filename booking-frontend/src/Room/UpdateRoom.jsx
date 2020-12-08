@@ -1,6 +1,5 @@
 import React from 'react';
 import {Container} from "@material-ui/core";
-import Footer from "../Layouts/Footer";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import styles from "../Profile/styles";
@@ -134,7 +133,6 @@ class UpdateRoom extends React.Component {
               </Grid>
             </Grid>
           </Container>
-          <Footer/>
           {
             this.state.redirect ?
                 <Redirect to={'/403'}/> : ''

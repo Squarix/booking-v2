@@ -18,7 +18,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Slide from "@material-ui/core/Slide";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Menu from "../Layouts/Menu";
-import Footer from "../Layouts/Footer";
 import MapComponent from "../Search/components/google-map";
 
 const roomService = new RoomService();
@@ -245,7 +244,13 @@ class NewRoom extends React.Component {
   reverseGeocoding = (lat, lng) => {
     fetch(`http://api.positionstack.com/v1/reverse?access_key=b09129e912cd202afdea9fcaf3fbbd38&query=${lat},${lng}`)
       .then(data => data.json())
-      .then(({ data }) => this.setState({ selectedCity: data[0].region }))
+      .then(({ data }) => {
+        const country = this.state.countries.find(c => c.name === data[0].country);
+        this.setState({
+          selectedCity: data[0].county || data[0].locality || data[0].region,
+          selectedCountry: country.id
+        });
+      })
     ;
   }
 
@@ -265,6 +270,7 @@ class NewRoom extends React.Component {
                     <Select
                       labelWidth={500}
                       value={this.state.selectedCountry}
+                      disabled
                       onChange={event => this.handleCountryChanged(event)}
                     >
                       <MenuItem value=""/>
@@ -476,9 +482,7 @@ class NewRoom extends React.Component {
               </Button>
             </DialogActions>
           </Dialog>
-
         </Container>
-        <Footer/>
       </>
     );
   }

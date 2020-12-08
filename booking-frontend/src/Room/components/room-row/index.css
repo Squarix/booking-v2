@@ -1,0 +1,109 @@
+.room-row__action-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+    color: #717171;
+    font-weight: 400;
+    min-height: 18px;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.room-row__action-item {
+    display: flex;
+    padding: 0 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.room-row__tooltip {
+    color: #FFF;
+    font-size: 16px;
+    padding: 10px 5px;
+    display: block;
+    text-decoration: none;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.room-row__image {
+    width: 100%;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px 6px -1px rgba(184,184,184,1);
+    -moz-box-shadow: 0px 0px 6px -1px rgba(184,184,184,1);
+    box-shadow: 0px 0px 6px -1px rgba(184,184,184,1);
+}
+
+.room-row__image-container {
+    max-width: 450px;
+    width: 40%;
+}
+
+.room-row__data {
+    width: calc(60% - 30px);
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.room-row__data-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.room-row__container:nth-of-type(1) {
+    border-top: 1px solid #ECECEC;
+}
+
+.room-row__container {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    padding: 25px;
+
+    border-bottom: 1px solid #ECECEC;
+}
+.room-row__price {
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.room-row__data-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.room-row__header {
+    color: #717171;
+    line-height: 18px;
+    max-height: 18px;
+    margin-bottom: 4px;
+}
+
+.room-row__description {
+    font-weight: 400;
+    color: #222222;
+    font-size: 18px;
+    line-height: 24px;
+
+    max-width: calc(100%);
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.room-row__delimiter {
+    margin-top: 11px;
+    margin-bottom: 9px;
+    width: 32px;
+    border-top: 1px solid #DDDDDD;
+}

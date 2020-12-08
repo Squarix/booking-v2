@@ -25,11 +25,11 @@ import DatePicker from "react-datepicker";
 import Button from "@material-ui/core/Button";
 import Redirect from "react-router-dom/es/Redirect";
 import InfoDialog from "../Layouts/InfoDialog";
-import Footer from "../Layouts/Footer";
 import Menu from "../Layouts/Menu";
 import { connect } from "react-redux";
 import { bookings, createBooking, room } from "../reducers/room-reducer";
 import { Alert } from "@material-ui/lab";
+import MapComponent from "../Search/components/google-map";
 
 class ViewRoom extends React.Component {
   constructor(props) {
@@ -234,13 +234,15 @@ class ViewRoom extends React.Component {
                 )}
               </List>
             </Grid>
+            <Grid item xs={12}>
+              <MapComponent markers={[{ lat: room.lat, lng: room.lng }]} />
+            </Grid>
             {
               this.state.redirectCabinet ?
                 <Redirect to={'/profile/bookings'}/> : ''
             }
           </Grid>
         </Container>
-        <Footer/>
         {this.getSnackBar()}
       </>
     )

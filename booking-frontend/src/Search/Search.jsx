@@ -13,7 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import Menu from '../Layouts/Menu';
 import Index from '../Room/components/room-card';
 
-import { publicRooms } from "../reducers/room-reducer";
+import { publicRooms, room } from "../reducers/room-reducer";
 import { filters } from "../reducers/filter-reducer";
 
 import ApartmentIcon from '@material-ui/icons/Apartment';
@@ -29,6 +29,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { menuProps } from "./constants";
 
 import MapComponent from "./components/google-map";
+import RoomRow from "../Room/components/room-row";
+import { Pagination } from "@material-ui/lab";
 
 
 class Search extends React.Component {
@@ -46,6 +48,7 @@ class Search extends React.Component {
     address: '',
     description: '',
     page: 1,
+    limit: 20,
     sortingSelect: false,
     order: '',
     viewMode: 'default',
@@ -112,12 +115,24 @@ class Search extends React.Component {
     )
   }
 
+  getPagination() {
+    const { viewMode, page, limit } = this.state;
+    const { roomsCount } = this.props;
+    if (viewMode !== 'default') return;
+
+    return (
+      <div className="list-rooms__pagination">
+        <Pagination size="large" count={roomsCount / limit + 1} page={page} color="primary" />
+      </div>
+    )
+  }
+
   getItemsContainer() {
     const { viewMode } = this.state;
     if (viewMode === 'default')
       return this.props.rooms?.map(room =>
-        <Grid key={room.id} xs={12} md={6} item style={{ padding: '20px' }}>
-          <Index {...room}/>
+        <Grid key={room.id} xs={12} item>
+          <RoomRow {...room}/>
         </Grid>
       )
 
@@ -223,6 +238,7 @@ class Search extends React.Component {
             <Grid item xs={12} md={9}>
               <Grid container>
                 {this.getItemsContainer()}
+                {this.getPagination()}
               </Grid>
             </Grid>
           </Grid>
@@ -236,7 +252,8 @@ const styledComponent = withStyles(styles, { withTheme: true })(Search);
 
 export default connect(state => ({
   filters: state.filter.filters.data,
-  rooms: state.room.publicRooms.data
+  rooms: state.room.publicRooms.data,
+  roomsCount: state.room.publicRooms.count,
 }), {
   fetchRooms: publicRooms.action,
   clearRooms: publicRooms.clearAction,

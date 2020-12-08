@@ -27,7 +27,7 @@ const MapComponent = (props) => {
       >
         {props.markers?.map((marker, index) =>
           <Marker position={marker} onClick={() => setCurrentMarker(index)}>
-            {currentMarker === index && (
+            {currentMarker === index && marker.infoBox && (
               <InfoWindow onCloseClick={() => setCurrentMarker(null)}>
                 {marker.infoBox}
               </InfoWindow>

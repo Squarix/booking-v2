@@ -24,7 +24,7 @@ export default function Index(props) {
 
   return (
     <a href={`/rooms/${props.id}`}>
-      <Card>
+      <Card style={{ maxWidth: '300px'}}>
         <CardHeader title={props.address} subheader={props.city?.name}/>
         {props.image ? (
           <CardMedia

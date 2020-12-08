@@ -61,6 +61,7 @@ export class RoomService {
     const query = this.roomRepository.createQueryBuilder('r')
       .leftJoinAndSelect('r.image', 'image')
       .leftJoinAndSelect('r.filters', 'filters')
+      .leftJoinAndSelect('r.city', 'city')
       .skip(skip)
       .take(take)
       .where('status = :status', { status: RoomStatus.published });

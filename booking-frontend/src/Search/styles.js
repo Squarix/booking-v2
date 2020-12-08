@@ -9,7 +9,8 @@ const styles = theme => ({
 	},
 
 	container: {
-		marginTop: '50px'
+		marginTop: '50px',
+		marginBottom: '150px'
 	},
 
 	resultItem: {

@@ -5,7 +5,6 @@ import Bookings from "./Bookings";
 import { Switch, Route } from "react-router-dom";
 import Menu from "../Layouts/Menu";
 import {Container} from "@material-ui/core";
-import Footer from "../Layouts/Footer";
 import Rents from "./Rents";
 import NotFound from "../Layouts/NotFound";
 
@@ -22,7 +21,6 @@ export default function ProfileRoute(props) {
 					<Route path='*' exact={true} component={NotFound} />
 				</Switch>
 			</Container>
-			<Footer/>
 		</React.Fragment>
 	);
 }

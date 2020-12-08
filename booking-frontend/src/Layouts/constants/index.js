@@ -1,5 +1,6 @@
 export const loggedMenuItems = [
   { to: '/rooms', primary: "Rooms" },
+  { to: '/rooms/create', primary: "Create room" },
   { to: '/profile', primary: "Profile" },
 ];
 
