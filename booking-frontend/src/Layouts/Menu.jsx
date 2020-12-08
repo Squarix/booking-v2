@@ -8,12 +8,12 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import { Link } from "react-router-dom";
 import MaterialLink from "@material-ui/core/Link";
-import AuthService from '../_services/AuthService';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
+import AuthService from '../_services/AuthService';
 
 import { authMenuItems, loggedMenuItems } from './constants';
 
@@ -67,7 +67,7 @@ export default function Menu() {
   const getMenuItem = (to, primary) => (
     <Link underline='none' color='black' to={to}>
       <ListItem button>
-        <ListItemText className="link-black" primary={primary}/>
+        <ListItemText className="link-black" primary={primary} />
       </ListItem>
     </Link>
   )
@@ -83,17 +83,16 @@ export default function Menu() {
         {loggedMenuItems.map(({ to, primary }) => getMenuItem(to, primary))}
         {!!auth.isUserModerator(auth.getToken()) && getMenuItem('/admin', 'Admin panel')}
       </List>
-      <Divider/>
+      <Divider />
       <List>
         {!auth.loggedIn() ?
           authMenuItems.map(({ to, primary }) => getMenuItem(to, primary)) : (
             <ListItem button>
               <MaterialLink underline='none' onClick={logOut}>
-                <ListItemText className="link-black" primary={'Sign out'}/>
+                <ListItemText className="link-black" primary="Sign out" />
               </MaterialLink>
             </ListItem>
-          )
-        }
+          )}
       </List>
     </div>
   );
@@ -103,17 +102,22 @@ export default function Menu() {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton onClick={toggleDrawer('top', true)} edge="start" className={classes.menuButton} color="inherit"
-                      aria-label="menu">
-            <MenuIcon/>
+          <IconButton
+            onClick={toggleDrawer('top', true)}
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+          >
+            <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6">
-            <Link className={classes.title} to={'/'}>Booking</Link>
+            <Link className={classes.title} to="/">Booking</Link>
           </Typography>
           {
             auth.loggedIn() ? (
               <div>
-                <Link className={classes.title} to={'/profile'}>{profile.email}</Link>
+                <Link className={classes.title} to="/profile">{profile.email}</Link>
               </div>
             ) : authMenuItems.map(({ to, primary }) => getMenuItem(to, primary))
           }

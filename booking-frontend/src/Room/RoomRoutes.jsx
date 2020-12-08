@@ -11,11 +11,11 @@ import Search from "../Search/Search";
 export default function RoomRoutes(props) {
   return (
     <Switch>
-      <PrivateRoute path={`${props.match.path}/create`} component={NewRoom}/>
-      <PrivateRoute path={`${props.match.path}/:id(\\d+)/update`} exact={true} component={UpdateRoom}/>
-      <Route path={`${props.match.path}/:id(\\d+)`} exact={true} component={ViewRoom}/>
-      <Route path={`${props.match.path}/`} exact={true} component={Search}/>
-      <Route path='*' exact={true} component={NotFound}/>
+      <PrivateRoute path={`${props.match.path}/create`} component={NewRoom} />
+      <PrivateRoute path={`${props.match.path}/:id(\\d+)/update`} exact component={UpdateRoom} />
+      <Route path={`${props.match.path}/:id(\\d+)`} exact component={ViewRoom} />
+      <Route path={`${props.match.path}/`} exact component={Search} />
+      <Route path='*' exact component={NotFound} />
     </Switch>
   );
 }

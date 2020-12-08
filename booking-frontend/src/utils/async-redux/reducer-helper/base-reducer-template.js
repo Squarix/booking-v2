@@ -21,6 +21,7 @@ export default class BaseReducerTemplate {
       error: null,
     };
   }
+
   onError(state, action) {
     return {
       ...state,

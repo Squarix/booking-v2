@@ -12,13 +12,13 @@ export default function request(requestProps) {
   let contentType = 'application/json';
 
   // Use null value as flag to reset the default application/json content type
-  if (null === requestProps.contentType) contentType = undefined;
+  if (requestProps.contentType === null) contentType = undefined;
 
   if (requestProps.contentType) contentType = requestProps.contentType;
 
   if (contentType) headers['Content-Type'] = contentType;
 
-  if (Cookie.get('id_token')) headers['Authorization'] = `Bearer ${Cookie.get('id_token')}`;
+  if (Cookie.get('id_token')) headers.Authorization = `Bearer ${Cookie.get('id_token')}`;
 
 
   const fetchOptions = {

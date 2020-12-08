@@ -1,19 +1,19 @@
 import React from 'react'
 import 'date-fns';
 
-import BookingService from '../_services/BookingService';
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import withStyles from "@material-ui/core/styles/withStyles";
-import styles from "./styles";
 
 import Moment from 'react-moment';
 import { Grid } from "@material-ui/core";
 import DateFnsUtils from '@date-io/date-fns';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import styles from "./styles";
+import BookingService from '../_services/BookingService';
 
 const bookingService = new BookingService();
 
@@ -37,7 +37,7 @@ class Bookings extends React.Component {
       [name]: new Date(date).toISOString()
     }).then(bookings => {
       this.setState({
-        bookings: bookings,
+        bookings,
         isFetching: false
       })
     })
@@ -61,7 +61,7 @@ class Bookings extends React.Component {
       .then(bookings => {
         console.log(bookings);
         this.setState({
-          bookings: bookings,
+          bookings,
           isFetching: false
         })
       })
@@ -74,17 +74,16 @@ class Bookings extends React.Component {
     const { classes } = this.props;
     if (status === 'approved')
       return classes.approved;
-    else if (status === 'approving')
+    if (status === 'approving')
       return classes.approving;
-    else
-      return classes.declined;
+    return classes.declined;
   }
 
   render() {
     const { classes } = this.props;
 
     return (
-      <React.Fragment>
+      <>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <Grid container justify="space-around">
             <KeyboardDatePicker
@@ -141,13 +140,13 @@ class Bookings extends React.Component {
                     {booking.room.address}
                   </TableCell>
                   <TableCell align="right">
-                    <Moment format={'MMM Do YY'}>
+                    <Moment format="MMM Do YY">
                       {booking.arriveDate}
                     </Moment>
                   </TableCell>
                   <TableCell align="right">{booking.room.city.name}</TableCell>
                   <TableCell align="right">
-                    <Moment format={'MMM Do YY'}>
+                    <Moment format="MMM Do YY">
                       {booking.endDate}
                     </Moment>
                   </TableCell>
@@ -159,7 +158,7 @@ class Bookings extends React.Component {
             </TableBody>
           </Table>
         </Grid>
-      </React.Fragment>
+      </>
     )
   }
 }

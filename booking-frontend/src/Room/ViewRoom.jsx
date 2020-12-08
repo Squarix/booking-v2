@@ -2,7 +2,6 @@ import 'date-fns';
 import React from 'react';
 import Grid from "@material-ui/core/Grid";
 import { Container, Snackbar, Typography } from "@material-ui/core";
-import styles from './styles';
 import withStyles from "@material-ui/core/styles/withStyles";
 import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
@@ -16,7 +15,6 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 
 import "react-datepicker/dist/react-datepicker.css";
-import { apiUrl } from "../_services/config";
 
 import io from 'socket.io-client';
 
@@ -24,11 +22,13 @@ import io from 'socket.io-client';
 import DatePicker from "react-datepicker";
 import Button from "@material-ui/core/Button";
 import Redirect from "react-router-dom/es/Redirect";
+import { connect } from "react-redux";
+import { Alert } from "@material-ui/lab";
 import InfoDialog from "../Layouts/InfoDialog";
 import Menu from "../Layouts/Menu";
-import { connect } from "react-redux";
 import { bookings, createBooking, room } from "../reducers/room-reducer";
-import { Alert } from "@material-ui/lab";
+import { apiUrl } from "../_services/config";
+import styles from './styles';
 import MapComponent from "../Search/components/google-map";
 
 class ViewRoom extends React.Component {
@@ -77,8 +77,8 @@ class ViewRoom extends React.Component {
 
   handleDateChanged = (newStartDate, newEndDate) => {
     const { endDate, startDate } = this.state;
-    const start = newStartDate ? newStartDate : startDate;
-    const end = newEndDate ? newEndDate : endDate;
+    const start = newStartDate || startDate;
+    const end = newEndDate || endDate;
     let days = 0;
 
     if (end && start) {
@@ -109,7 +109,7 @@ class ViewRoom extends React.Component {
       body: params
     });
 
-    let message = '', type = 'success';
+    let message = ''; let type = 'success';
     if (this.props.bookingSuccess)
       message = 'Booking has been created!';
 
@@ -150,16 +150,17 @@ class ViewRoom extends React.Component {
 
     return (
       <>
-        <Menu/>
+        <Menu />
         <Container fixed>
           <Grid container className={classes.bodyContainer}>
             <Grid md={9} xs={12} className={classes.content} item>
               <Typography variant="h1" className={classes.header}>{room.address}</Typography>
               <Carousel className={classes.carousel}>
-                {room.images.map(image =>
+                {room.images.map(image => (
                   <div className={classes.roomImageDiv}>
-                    <img src={`${apiUrl}/${image.path}`} className={classes.roomImage}/>
+                    <img src={`${apiUrl}/${image.path}`} className={classes.roomImage} />
                   </div>
+                )
                 )}
               </Carousel>
               <div className={classes.descriptionBlock}>
@@ -178,19 +179,28 @@ class ViewRoom extends React.Component {
             <Grid xs={12} md={3} className={classes.sidebars} item>
               <List>
                 <ListItem className={classes.label}>
-                  <GroupIcon/>
-                  <span>{room.guestsAmount} guests</span>
+                  <GroupIcon />
+                  <span>
+                    {room.guestsAmount}
+                    {' '}
+                    guests
+                  </span>
                 </ListItem>
                 <ListItem className={classes.label}>
-                  <AttachMoneyIcon/>
-                  <span>{' ~'}{room.price} per day</span>
+                  <AttachMoneyIcon />
+                  <span>
+                    {' ~'}
+                    {room.price}
+                    {' '}
+                    per day
+                  </span>
                 </ListItem>
                 <ListItem className={classes.label}>
-                  <LocationOnIcon/>
+                  <LocationOnIcon />
                   <span>{room?.city.name}</span>
                 </ListItem>
                 <ListItem className={classes.label}>
-                  <PermIdentityIcon/>
+                  <PermIdentityIcon />
                   <span>{room?.user.email}</span>
                 </ListItem>
                 <ListItem className={classes.label}>
@@ -218,7 +228,12 @@ class ViewRoom extends React.Component {
                 {!!this.state.totalPrice && (
                   <>
                     <ListItem className={classes.label}>
-                      <span>Total: {this.state.totalPrice} $</span>
+                      <span>
+                        Total:
+                        {this.state.totalPrice}
+                        {' '}
+                        $
+                      </span>
                     </ListItem>
                     <ListItem className={classes.label}>
                       <Button
@@ -239,11 +254,11 @@ class ViewRoom extends React.Component {
             </Grid>
             {
               this.state.redirectCabinet ?
-                <Redirect to={'/profile/bookings'}/> : ''
+                <Redirect to="/profile/bookings" /> : ''
             }
           </Grid>
+          {this.getSnackBar()}
         </Container>
-        {this.getSnackBar()}
       </>
     )
   }
@@ -256,8 +271,8 @@ function isValidDate(bookedDates = [], date, startDate, endDate) {
   let maxDate = new Date();
   maxDate.setFullYear(maxDate.getFullYear() + 1);
 
-  minDate = startDate ? startDate : minDate;
-  maxDate = endDate ? endDate : maxDate;
+  minDate = startDate || minDate;
+  maxDate = endDate || maxDate;
 
   return (checkDate(bookedDates, date) && (date > minDate) && (date < maxDate))
 }

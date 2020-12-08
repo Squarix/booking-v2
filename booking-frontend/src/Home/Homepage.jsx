@@ -1,22 +1,22 @@
 import React from 'react';
-import Menu from "../Layouts/Menu";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
+import Menu from "../Layouts/Menu";
 import useStyles from "./styles";
 
 export default function Homepage() {
   const classes = useStyles()
 
   return (
-    <React.Fragment>
-      <Menu/>
+    <>
+      <Menu />
       <div className={classes.homeContainer}>
         <Grid container>
           <Grid item xs={12}>
             <Paper className={classes.mainFeaturedPost}>
-              <div className={classes.overlay}/>
+              <div className={classes.overlay} />
               <Grid container>
                 <Grid item md={6}>
                   <div className={classes.mainFeaturedPostContent}>
@@ -29,8 +29,7 @@ export default function Homepage() {
                       Booking.ww enables properties around the world to reach a global audience and grow their
                       businesses.
                     </Typography>
-                    <Link variant="subtitle1" href="#">
-                    </Link>
+                    <Link variant="subtitle1" href="#" />
                   </div>
                 </Grid>
               </Grid>
@@ -38,7 +37,7 @@ export default function Homepage() {
           </Grid>
         </Grid>
       </div>
-    </React.Fragment>
+    </>
   );
 }
 

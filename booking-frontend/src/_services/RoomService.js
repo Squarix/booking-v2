@@ -10,21 +10,17 @@ export default class RoomService {
 
   getRoomBookings(id) {
     const url = `${apiUrl}/rooms/${id}/bookings`
-    return authService.fetch(url).then(bookings => {
-      return Promise.resolve(bookings);
-    })
+    return authService.fetch(url).then(bookings => Promise.resolve(bookings))
   }
 
   getCountries() {
-    const url = apiUrl + '/countries';
+    const url = `${apiUrl  }/countries`;
     return fetch(url).catch(() => []);
   }
 
   getRoom(id) {
-    const url = apiUrl + '/rooms/' + id;
-    return authService.fetch(url).then(res => {
-      return Promise.resolve(res);
-    })
+    const url = `${apiUrl  }/rooms/${  id}`;
+    return authService.fetch(url).then(res => Promise.resolve(res))
   }
 
   updateRoom(params, id) {
@@ -32,9 +28,7 @@ export default class RoomService {
     return authService.fetch(url, {
       method: 'PUT',
       body: JSON.stringify(params)
-    }).then(res => {
-      return Promise.resolve(res)
-    })
+    }).then(res => Promise.resolve(res))
   }
 
   createRoom(roomParams, filters, images, mainImage) {
@@ -47,7 +41,7 @@ export default class RoomService {
       data.append('images', image);
     });
 
-    const url = apiUrl + '/rooms';
+    const url = `${apiUrl  }/rooms`;
     return authService.fetch(url, {
       method: 'POST',
       body: data
@@ -62,7 +56,7 @@ export default class RoomService {
   }
 
   getCategories() {
-    const url = apiUrl + '/categories';
+    const url = `${apiUrl  }/categories`;
     return fetch(url);
   }
 

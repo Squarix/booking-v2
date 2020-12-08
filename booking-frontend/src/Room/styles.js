@@ -17,7 +17,7 @@ const styles = theme => ({
 		justifyContent: 'left',
 		flexDirection: 'column',
 		paddingTop: '31px',
-		//height: '100vh',
+		// height: '100vh',
 	},
 
 	bodyContainer: {

@@ -9,9 +9,7 @@ export default class ProfileService {
 
 	getProfile() {
 		const url = `${apiUrl}/users/profile`
-		return authService.fetch(url).then(profile => {
-			return Promise.resolve(profile);
-		})
+		return authService.fetch(url).then(profile => Promise.resolve(profile))
 	}
 
 	updateProfile(id, params) {
@@ -21,9 +19,7 @@ export default class ProfileService {
 			body: JSON.stringify({
 				...params
 			})
-		}).then(res => {
-			return Promise.resolve(res)
-		})
+		}).then(res => Promise.resolve(res))
 	}
 
 }

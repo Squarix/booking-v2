@@ -25,7 +25,7 @@ const MapComponent = (props) => {
           props.onSelect(e.latLng);
         })()}
       >
-        {props.markers?.map((marker, index) =>
+        {props.markers?.map((marker, index) => (
           <Marker position={marker} onClick={() => setCurrentMarker(index)}>
             {currentMarker === index && marker.infoBox && (
               <InfoWindow onCloseClick={() => setCurrentMarker(null)}>
@@ -33,8 +33,9 @@ const MapComponent = (props) => {
               </InfoWindow>
             )}
           </Marker>
+        )
         )}
-        {selection && <Marker position={selection}/>}
+        {selection && <Marker position={selection} />}
       </GoogleMap>
     </div>
   )
@@ -45,9 +46,9 @@ MapComponent.propTypes = {}
 export default compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyDQjxQmtGjQAaARdzYCDcmnthIzO5mTgA4&v=3.exp&libraries=geometry,drawing,places",
-    loadingElement: <CircularProgress/>,
-    containerElement: <div style={{ height: `400px`, width: '100%' }}/>,
-    mapElement: <div style={{ height: `100%` }}/>,
+    loadingElement: <CircularProgress />,
+    containerElement: <div style={{ height: `400px`, width: '100%' }} />,
+    mapElement: <div style={{ height: `100%` }} />,
   }),
   withScriptjs,
   withGoogleMap

@@ -11,9 +11,7 @@ export default class BookingService {
 		const url = new URL(`${apiUrl}/users/profile/bookings`);
 		Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
-		return authService.fetch(url).then(res => {
-			return Promise.resolve(res);
-		})
+		return authService.fetch(url).then(res => Promise.resolve(res))
 	}
 
 	getRents() {

@@ -8,7 +8,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 
 import { Tooltip, Typography } from "@material-ui/core";
 
-import { apiUrl } from "../../../_services/config";
 
 import './index.css';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
@@ -16,6 +15,7 @@ import ApartmentIcon from '@material-ui/icons/Apartment';
 import GroupIcon from '@material-ui/icons/Group';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import PhotoCameraOutlinedIcon from '@material-ui/icons/PhotoCameraOutlined';
+import { apiUrl } from "../../../_services/config";
 
 export default function Index(props) {
   const getTooltipTitle = title => (
@@ -25,7 +25,7 @@ export default function Index(props) {
   return (
     <a href={`/rooms/${props.id}`}>
       <Card style={{ maxWidth: '300px'}}>
-        <CardHeader title={props.address} subheader={props.city?.name}/>
+        <CardHeader title={props.address} subheader={props.city?.name} />
         {props.image ? (
           <CardMedia
             image={`${apiUrl}/${props.image.path}`}
@@ -38,33 +38,41 @@ export default function Index(props) {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center'
-          }}>
-            <PhotoCameraOutlinedIcon fontSize="large"/>
+          }}
+          >
+            <PhotoCameraOutlinedIcon fontSize="large" />
             <Typography variant="body1">No photo provided</Typography>
           </div>
         )}
-        <CardContent>
-        </CardContent>
+        <CardContent />
         <CardActions>
           <div className="room-card__action-container">
             <Tooltip title={getTooltipTitle('Price')}>
               <div className="room-card__action-item">
-                <AttachMoneyIcon/> <span>{props.price}</span>
+                <AttachMoneyIcon /> 
+                {' '}
+                <span>{props.price}</span>
               </div>
             </Tooltip>
             <Tooltip title={getTooltipTitle('Guests amount')}>
               <div className="room-card__action-item">
-                <GroupIcon/> <span>{props.guestsAmount}</span>
+                <GroupIcon /> 
+                {' '}
+                <span>{props.guestsAmount}</span>
               </div>
             </Tooltip>
             <Tooltip title={getTooltipTitle('Address')}>
               <div className="room-card__action-item">
-                <LocationOnIcon/> <span>{props.address}</span>
+                <LocationOnIcon /> 
+                {' '}
+                <span>{props.address}</span>
               </div>
             </Tooltip>
             <Tooltip title={getTooltipTitle('Rooms amount')}>
               <div className="room-card__action-item">
-                <ApartmentIcon/> <span>{props.size}</span>
+                <ApartmentIcon /> 
+                {' '}
+                <span>{props.size}</span>
               </div>
             </Tooltip>
           </div>

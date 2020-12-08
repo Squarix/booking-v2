@@ -3,8 +3,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-//import FormControlLabel from '@material-ui/core/FormControlLabel';
-//import Checkbox from '@material-ui/core/Checkbox';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -13,20 +13,21 @@ import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
+import Cookie from 'js-cookie';
 import AuthService from '../_services/AuthService';
 
-import Cookie from 'js-cookie';
 
 function Copyright() {
 	return (
-		<Typography variant="body2" color="textSecondary" align="center">
-			{'Copyright © '}
-			<Link color="inherit" href="https://github.com/Squarix">
-				Пожылая торпеда
-			</Link>{' '}
-			{new Date().getFullYear()}
-			{'.'}
-		</Typography>
+  <Typography variant="body2" color="textSecondary" align="center">
+    {'Copyright © '}
+    <Link color="inherit" href="https://github.com/Squarix">
+      Пожылая торпеда
+    </Link>
+    {' '}
+    {new Date().getFullYear()}
+    {'.'}
+  </Typography>
 	);
 }
 
@@ -78,80 +79,81 @@ export default function SignUp() {
 	const [error, setError] = useState('');
 
 	return (
-		<Container component="main" maxWidth="xs">
-			{redirect ?
-				<Redirect to={redirect}/> : ''
-			}
-			<CssBaseline/>
-			<div className={classes.paper}>
-				<Avatar className={classes.avatar}>
-					<LockOutlinedIcon/>
-				</Avatar>
-				<Typography component="h1" variant="h5">
-					Sign up
-				</Typography>
-				<form className={classes.form} noValidate onSubmit={event => handleSubmit(event)}>
-					<TextField
-						variant="outlined"
-						margin="normal"
-						required
-						fullWidth
-						label="Email Address"
-						name="email"
-						autoFocus
-					/>
-					<TextField
-						variant="outlined"
-						margin="normal"
-						required
-						fullWidth
-						name="password"
-						label="Password"
-						type="password"
-					/>
-					<TextField
-						variant="outlined"
-						margin="normal"
-						required
-						fullWidth
-						name="firstName"
-						label="First Name"
-					/>
-					<TextField
-						variant="outlined"
-						margin="normal"
-						required
-						fullWidth
-						name="lastName"
-						label="Last Name"
-					/>
-					<Typography variant="caption" color="error">
-						{error}
-					</Typography>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-					>
-						Sign Up
-					</Button>
-					<Grid container
-					      direction="row"
-					      justify="center"
-					      alignItems="center">
-						<Grid item>
-							<Link href={'/sign-in'} variant="body2">
-								{"Already have an account? Sign In"}
-							</Link>
-						</Grid>
-					</Grid>
-				</form>
-			</div>
-			<Box mt={8}>
-				<Copyright/>
-			</Box>
-		</Container>
+  <Container component="main" maxWidth="xs">
+    {redirect ?
+      <Redirect to={redirect} /> : ''}
+    <CssBaseline />
+    <div className={classes.paper}>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign up
+      </Typography>
+      <form className={classes.form} noValidate onSubmit={event => handleSubmit(event)}>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          label="Email Address"
+          name="email"
+          autoFocus
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="firstName"
+          label="First Name"
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="lastName"
+          label="Last Name"
+        />
+        <Typography variant="caption" color="error">
+          {error}
+        </Typography>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+        >
+          Sign Up
+        </Button>
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item>
+            <Link href="/sign-in" variant="body2">
+              Already have an account? Sign In
+            </Link>
+          </Grid>
+        </Grid>
+      </form>
+    </div>
+    <Box mt={8}>
+      <Copyright />
+    </Box>
+  </Container>
 	);
 }

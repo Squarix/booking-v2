@@ -10,8 +10,8 @@ const style = {
 
 export default function Forbidden() {
 	return (
-		<React.Fragment>
-			<div style={style}/>
-		</React.Fragment>
+  <>
+    <div style={style} />
+  </>
 	)
 }

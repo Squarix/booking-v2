@@ -25,29 +25,46 @@ export default function RoomRow(props) {
       </div>
       <div className="room-row__data">
         <div className="room-row__data-top">
-        <div className="room-row__header">Appartments at {props.city?.name}</div>
-        <div className="room-row__description">{props.description}</div>
-        <div className="room-row__delimiter" />
-        <div className="room-row__action-container">
-          <Tooltip title={getTooltipTitle('Guests amount')}>
-            <div className="room-row__action-item">
-              <GroupIcon fontSize="12px" /> <span>{props.guestsAmount}</span>
-            </div>
-          </Tooltip>
-          <Tooltip title={getTooltipTitle('Address')}>
-            <div className="room-row__action-item">
-              <LocationOnIcon fontSize="12px" /> <span>{props.address}</span>
-            </div>
-          </Tooltip>
-          <Tooltip title={getTooltipTitle('Rooms amount')}>
-            <div className="room-row__action-item">
-              <ApartmentIcon fontSize="12px" /> <span>{props.size}</span>
-            </div>
-          </Tooltip>
-        </div>
+          <div className="room-row__header">
+            Appartments at
+            {props.city?.name}
+          </div>
+          <div className="room-row__description">{props.description}</div>
+          <div className="room-row__delimiter" />
+          <div className="room-row__action-container">
+            <Tooltip title={getTooltipTitle('Guests amount')}>
+              <div className="room-row__action-item">
+                <GroupIcon fontSize="12px" /> 
+                {' '}
+                <span>{props.guestsAmount}</span>
+              </div>
+            </Tooltip>
+            <Tooltip title={getTooltipTitle('Address')}>
+              <div className="room-row__action-item">
+                <LocationOnIcon fontSize="12px" /> 
+                {' '}
+                <span>{props.address}</span>
+              </div>
+            </Tooltip>
+            <Tooltip title={getTooltipTitle('Rooms amount')}>
+              <div className="room-row__action-item">
+                <ApartmentIcon fontSize="12px" /> 
+                {' '}
+                <span>{props.size}</span>
+              </div>
+            </Tooltip>
+          </div>
         </div>
         <div className="room-row__data-bottom">
-          <div className="room-row__price"><b>{props.price} $</b> / per day</div>
+          <div className="room-row__price">
+            <b>
+              {props.price}
+              {' '}
+              $
+            </b>
+            {' '}
+            / per day
+          </div>
         </div>
       </div>
     </a>

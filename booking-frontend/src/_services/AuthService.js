@@ -93,7 +93,7 @@ export default class AuthService {
     }
 
     if (this.loggedIn()) {
-      headers['Authorization'] = `Bearer ${this.getToken()}`
+      headers.Authorization = `Bearer ${this.getToken()}`
     }
 
     return fetch(url, {
@@ -108,10 +108,10 @@ export default class AuthService {
     // raises an error in case response status is not a success
     if (response.status >= 200 && response.status < 300) { // Success status lies between 200 to 300
       return response
-    } else {
+    } 
       const error = new Error(response.statusText)
       error.response = response
       throw error
-    }
+    
   }
 }

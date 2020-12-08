@@ -1,12 +1,10 @@
 import React from 'react'
-import BookingService from '../_services/BookingService';
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import withStyles from "@material-ui/core/styles/withStyles";
-import styles from "./styles";
 
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -14,6 +12,8 @@ import ClearIcon from '@material-ui/icons/Clear';
 import Moment from 'react-moment';
 import Fab from "@material-ui/core/Fab";
 import Grid from "@material-ui/core/Grid";
+import styles from "./styles";
+import BookingService from '../_services/BookingService';
 
 const bookingService = new BookingService();
 
@@ -36,7 +36,7 @@ class Bookings extends React.Component {
     bookingService.getRents()
       .then(rents => {
         this.setState({
-          rents: rents,
+          rents,
           isFetching: false
         })
       })
@@ -46,10 +46,9 @@ class Bookings extends React.Component {
     const { classes } = this.props;
     if (status === 'approved')
       return classes.approved;
-    else if (status === 'pending')
+    if (status === 'pending')
       return classes.pending;
-    else
-      return classes.declined;
+    return classes.declined;
   }
 
   changeStatus(status, rentId) {
@@ -64,7 +63,7 @@ class Bookings extends React.Component {
     const { classes } = this.props;
 
     return (
-      <React.Fragment>
+      <>
         <Grid container xs={12} className={classes.tableContainer}>
           <Table aria-label="simple table">
             <TableHead>
@@ -78,7 +77,7 @@ class Bookings extends React.Component {
                 <TableCell align="right">Guests amount</TableCell>
                 <TableCell align="right">Price</TableCell>
                 <TableCell align="right">Status</TableCell>
-                <TableCell/>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -98,13 +97,13 @@ class Bookings extends React.Component {
                     {booking.room.address}
                   </TableCell>
                   <TableCell align="right">
-                    <Moment format={'MMM Do YY'}>
+                    <Moment format="MMM Do YY">
                       {booking.arriveDate}
                     </Moment>
                   </TableCell>
                   <TableCell align="right">{booking.room.city.name}</TableCell>
                   <TableCell align="right">
-                    <Moment format={'MMM Do YY'}>
+                    <Moment format="MMM Do YY">
                       {booking.endDate}
                     </Moment>
                   </TableCell>
@@ -118,17 +117,19 @@ class Bookings extends React.Component {
                           color="primary"
                           size="small"
                           onClick={() => this.changeStatus('approved', booking.id)}
-                          aria-label="Approve" className={classes.fab}
+                          aria-label="Approve"
+                          className={classes.fab}
                         >
-                          <CheckIcon/>
+                          <CheckIcon />
                         </Fab>
                         <Fab
                           color="secondary"
                           size="small"
                           onClick={() => this.changeStatus('declined', booking.id)}
-                          aria-label="Decline" className={classes.fab}
+                          aria-label="Decline"
+                          className={classes.fab}
                         >
-                          <ClearIcon/>
+                          <ClearIcon />
                         </Fab>
                       </>
                     )}
@@ -138,7 +139,7 @@ class Bookings extends React.Component {
             </TableBody>
           </Table>
         </Grid>
-      </React.Fragment>
+      </>
     )
   }
 }

@@ -49,6 +49,29 @@ export class RoomService {
     return this.roomRepository.save(room);
   }
 
+  async findAllPending (
+    take = 21,
+    skip = 0
+  ): Promise<ManyModelDto<Room>> {
+    const [result, count] = await this.roomRepository.findAndCount({
+      relations: ['city', 'user'],
+      where: { status: RoomStatus.pending },
+      skip,
+      take
+    });
+
+    return {
+      result, count
+    }
+  }
+
+  async changeStatus(id: number, newStatus: RoomStatus): Promise<Room> {
+    const room = await this.findOne(id);
+    room.status = newStatus;
+
+    return this.roomRepository.save(room);
+  }
+
   async findAll(
     take = 21,
     skip = 0,

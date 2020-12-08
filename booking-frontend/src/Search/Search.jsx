@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from "react-redux";
 
 import './index.css';
-import styles from './styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import Button from "@material-ui/core/Button";
@@ -10,11 +9,7 @@ import Chip from "@material-ui/core/Chip";
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
-import Menu from '../Layouts/Menu';
-import Index from '../Room/components/room-card';
 
-import { publicRooms, room } from "../reducers/room-reducer";
-import { filters } from "../reducers/filter-reducer";
 
 import ApartmentIcon from '@material-ui/icons/Apartment';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -23,14 +18,19 @@ import GroupIcon from "@material-ui/icons/Group";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import SortIcon from '@material-ui/icons/Sort';
 
-import BookingTextField from "./components/text-field";
 import { MenuItem, Select, Switch } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
+import { Pagination } from "@material-ui/lab";
+import BookingTextField from "./components/text-field";
 import { menuProps } from "./constants";
 
 import MapComponent from "./components/google-map";
 import RoomRow from "../Room/components/room-row";
-import { Pagination } from "@material-ui/lab";
+import { filters } from "../reducers/filter-reducer";
+import { publicRooms, room } from "../reducers/room-reducer";
+import Index from '../Room/components/room-card';
+import Menu from '../Layouts/Menu';
+import styles from './styles';
 
 
 class Search extends React.Component {
@@ -108,7 +108,7 @@ class Search extends React.Component {
   getFilters() {
     const { selectedFilters } = this.state;
     const getVariant = selected => selected ? 'default' : 'outlined';
-    return this.props.filters?.map(({ id, filter }) =>
+    return this.props.filters?.map(({ id, filter }) => (
       <Chip
         color="primary"
         key={id}
@@ -116,6 +116,7 @@ class Search extends React.Component {
         label={filter}
         variant={getVariant(selectedFilters[id])}
       />
+    )
     )
   }
 
@@ -144,10 +145,11 @@ class Search extends React.Component {
   getItemsContainer() {
     const { viewMode } = this.state;
     if (viewMode === 'default')
-      return this.props.rooms?.map(room =>
+      return this.props.rooms?.map(room => (
         <Grid key={room.id} xs={12} item>
-          <RoomRow {...room}/>
+          <RoomRow {...room} />
         </Grid>
+      )
       )
 
     const markers = this.props.rooms?.map(
@@ -193,7 +195,7 @@ class Search extends React.Component {
 
     return (
       <>
-        <Menu/>
+        <Menu />
         <Container className={classes.container}>
           <Grid container>
             <Grid item xs={12} className="list-rooms__sort-container">
@@ -205,8 +207,14 @@ class Search extends React.Component {
                 onClose={this.openCloseSortMenu}
                 MenuProps={menuProps}
               >
-                <MenuItem value="ASC">Price ascending <ArrowUpwardIcon/></MenuItem>
-                <MenuItem value="DESC">Price descending <ArrowDownwardIcon/></MenuItem>
+                <MenuItem value="ASC">
+                  Price ascending
+                  <ArrowUpwardIcon />
+                </MenuItem>
+                <MenuItem value="DESC">
+                  Price descending
+                  <ArrowDownwardIcon />
+                </MenuItem>
                 <MenuItem value="">Price default </MenuItem>
               </Select>
               <IconButton
@@ -215,7 +223,7 @@ class Search extends React.Component {
                 component="span"
                 onClick={this.openCloseSortMenu}
               >
-                <SortIcon/>
+                <SortIcon />
               </IconButton>
             </Grid>
             <Grid item xs={12} md={3}>
@@ -224,7 +232,7 @@ class Search extends React.Component {
                 value={this.state.guests}
                 onChange={this.handleInputChange}
                 className={classes.textField}
-                icon={<GroupIcon/>}
+                icon={<GroupIcon />}
               />
               <BookingTextField
                 name="rooms"
@@ -232,19 +240,19 @@ class Search extends React.Component {
                 value={this.state.rooms}
                 onChange={this.handleInputChange}
                 className={classes.textField}
-                icon={<ApartmentIcon/>}
+                icon={<ApartmentIcon />}
               />
               <BookingTextField
                 name="address"
                 value={this.state.address}
                 onChange={this.handleInputChange}
                 className={classes.textField}
-                icon={<LocationOnIcon/>}
+                icon={<LocationOnIcon />}
               />
               <div className={classes.chipsContainer}>
                 {this.getFilters()}
               </div>
-              <div className={classes.margin}/>
+              <div className={classes.margin} />
               <Button variant='outlined' color='primary' className={classes.button} onClick={this.handleSearch}>
                 Search
               </Button>

@@ -5,23 +5,19 @@ export default class SearchService {
   }
 
   doSearch(params) {
-    const url = new URL(apiUrl + '/search');
+    const url = new URL(`${apiUrl  }/search`);
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
 
     return fetch(url)
         .then(res => res.json())
-        .then(data => {
-          return Promise.resolve(data);
-        })
+        .then(data => Promise.resolve(data))
   }
 
   getFilters() {
     const url = `${apiUrl}/rooms/filters`;
     return fetch(url)
         .then(res => res.json())
-        .then(data => {
-          return Promise.resolve(data)
-        })
+        .then(data => Promise.resolve(data))
   }
 }

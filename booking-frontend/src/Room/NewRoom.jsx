@@ -1,5 +1,4 @@
 import React from 'react';
-import RoomService from "../_services/RoomService";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -17,6 +16,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Slide from "@material-ui/core/Slide";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import RoomService from "../_services/RoomService";
 import Menu from "../Layouts/Menu";
 import MapComponent from "../Search/components/google-map";
 
@@ -87,9 +87,7 @@ const styles = theme => ({
   },
 });
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 
 class NewRoom extends React.Component {
@@ -159,10 +157,10 @@ class NewRoom extends React.Component {
 
   addFilter = () => {
     if (this.state.newFilter && this.state.newFilterCategory) {
-      const filters = this.state.filters;
+      const {filters} = this.state;
       filters.push({ filter: this.state.newFilter, categoryId: this.state.newFilterCategory });
       this.setState({
-        filters: filters,
+        filters,
         newFilter: '',
         newFilterCategory: null
       })
@@ -173,7 +171,7 @@ class NewRoom extends React.Component {
     roomService.getCountries().then(result => {
       result.json().then(countries => {
         this.setState({
-          countries: countries
+          countries
         });
       })
     });
@@ -229,10 +227,10 @@ class NewRoom extends React.Component {
   };
 
   handleDeleteFilter = (index) => {
-    const filters = this.state.filters;
+    const {filters} = this.state;
     filters.splice(index, 1);
     this.setState({
-      filters: filters
+      filters
     })
   };
 
@@ -259,7 +257,7 @@ class NewRoom extends React.Component {
     const { countries, filters, filterCategories } = this.state;
     return (
       <>
-        <Menu/>
+        <Menu />
         <Container fixed>
           <Grid className={classes.container} container>
             <form className={classes.form} noValidate onSubmit={event => this.handleFormSubmit(event)}>
@@ -273,7 +271,7 @@ class NewRoom extends React.Component {
                       disabled
                       onChange={event => this.handleCountryChanged(event)}
                     >
-                      <MenuItem value=""/>
+                      <MenuItem value="" />
                       {countries.map(country =>
                         <MenuItem key={country.id} value={country.id}>{country.name}</MenuItem>
                       )}
@@ -289,7 +287,7 @@ class NewRoom extends React.Component {
                       disabled
                       id="component-outlined"
                       labelWidth={50}
-                      name={'selectedCity'}
+                      name="selectedCity"
                       value={this.state.selectedCity}
                       onChange={this.handleInputChange}
                     />
@@ -301,7 +299,7 @@ class NewRoom extends React.Component {
                       Address
                     </InputLabel>
                     <OutlinedInput
-                      name={'address'}
+                      name="address"
                       id="component-outlined"
                       labelWidth={75}
                       value={this.state.address}
@@ -316,7 +314,7 @@ class NewRoom extends React.Component {
                     </InputLabel>
                     <OutlinedInput
                       multiline
-                      name={'description'}
+                      name="description"
                       id="component-outlined"
                       labelWidth={150}
                       value={this.state.description}
@@ -332,7 +330,7 @@ class NewRoom extends React.Component {
                     <OutlinedInput
                       id="component-outlined"
                       labelWidth={150}
-                      name={'guestsAmount'}
+                      name="guestsAmount"
                       value={this.state.guestsAmount}
                       onChange={this.handleInputChange}
                     />
@@ -344,7 +342,7 @@ class NewRoom extends React.Component {
                       Rooms amount
                     </InputLabel>
                     <OutlinedInput
-                      name={'size'}
+                      name="size"
                       id="component-outlined"
                       labelWidth={150}
                       value={this.state.size}
@@ -369,17 +367,14 @@ class NewRoom extends React.Component {
                 <Grid item xs={12} className={classes.gridItem}>
                   {!!filters.length && (
                     <Paper className={classes.root}>
-                      {filters.map((data, index) => {
-                        return (
-                          <Chip
-                            key={index}
-                            label={data.filter}
-                            onDelete={() => this.handleDeleteFilter(index)}
-                            className={classes.chip}
-                          />
-                        )
-                      })
-                      }
+                      {filters.map((data, index) => (
+                        <Chip
+                          key={index}
+                          label={data.filter}
+                          onDelete={() => this.handleDeleteFilter(index)}
+                          className={classes.chip}
+                        />
+                        ))}
                     </Paper>
                   )}
                 </Grid>
@@ -391,9 +386,13 @@ class NewRoom extends React.Component {
                       value={this.state.newFilterCategory}
                       onChange={event => this.handleFilterCategoryChange(event)}
                     >
-                      <MenuItem value=''/>
-                      {filterCategories.map(category =>
-                        <MenuItem key={category.id} value={category.id}> {category.name}</MenuItem>
+                      <MenuItem value='' />
+                      {filterCategories.map(category => (
+                        <MenuItem key={category.id} value={category.id}> 
+                          {' '}
+                          {category.name}
+                        </MenuItem>
+                      )
                       )}
                     </Select>
                   </FormControl>
@@ -406,14 +405,14 @@ class NewRoom extends React.Component {
                     <OutlinedInput
                       id='component-outlined'
                       labelWidth={50}
-                      name={'newFilter'}
+                      name="newFilter"
                       value={this.state.newFilter}
                       onChange={this.handleInputChange}
                     />
                   </FormControl>
                 </Grid>
                 <Grid item md={4} xs={12} className={classes.gridItem}>
-                  <Button variant={'contained'} className={classes.addButton} onClick={() => this.addFilter()}>
+                  <Button variant="contained" className={classes.addButton} onClick={() => this.addFilter()}>
                     Add filter
                   </Button>
                 </Grid>
@@ -432,20 +431,19 @@ class NewRoom extends React.Component {
                       variant='contained'
                       color='secondary'
                       component='span'
-                      startIcon={<CloudUploadIcon/>}
+                      startIcon={<CloudUploadIcon />}
                     >
                       Upload
                     </Button>
                   </label>
                   <Grid className={classes.grid} container>
-                    {this.state.images.map((image, index) =>
+                    {this.state.images.map((image, index) => (
                       <Grid key={index} xs={12} md={5} item className={classes.imageContainer}>
-                        <img onClick={() => this.handleMainChanged(index)} src={image} className={classes.image}/>
+                        <img onClick={() => this.handleMainChanged(index)} src={image} className={classes.image} />
                         {this.state.mainImage === index ?
-                          <div className={classes.mainImage}/> : ''
-
-                        }
+                          <div className={classes.mainImage} /> : ''}
                       </Grid>
+                    )
                     )}
                   </Grid>
                 </Grid>
@@ -454,11 +452,11 @@ class NewRoom extends React.Component {
                 </Grid>
                 <Grid item xs={12} className={classes.gridItem}>
                   {this.state.isFetching ?
-                    <CircularProgress size={32} className={classes.submitButton}/> :
-                    <Button variant={'contained'} color={'primary'} className={classes.submitButton} type={'submit'}>
-                      Submit
-                    </Button>
-                  }
+                    <CircularProgress size={32} className={classes.submitButton} /> : (
+                      <Button variant="contained" color="primary" className={classes.submitButton} type="submit">
+                        Submit
+                      </Button>
+                  )}
                 </Grid>
               </Grid>
             </form>

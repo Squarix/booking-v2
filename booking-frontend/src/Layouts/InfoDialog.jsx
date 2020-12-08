@@ -8,23 +8,23 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function InfoDialog(props) {
 	return (
-			<Dialog
-				open={props.open}
-				onClose={props.handleClose}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
-				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
-						{props.message}
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={props.handleClose} color="primary" autoFocus>
-						Ok
-					</Button>
-				</DialogActions>
-			</Dialog>
+  <Dialog
+    open={props.open}
+    onClose={props.handleClose}
+    aria-labelledby="alert-dialog-title"
+    aria-describedby="alert-dialog-description"
+  >
+    <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
+    <DialogContent>
+      <DialogContentText id="alert-dialog-description">
+        {props.message}
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={props.handleClose} color="primary" autoFocus>
+        Ok
+      </Button>
+    </DialogActions>
+  </Dialog>
 	);
 }

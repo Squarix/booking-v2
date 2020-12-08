@@ -1,0 +1,6 @@
+.admin-rooms__pagination {
+    padding: 50px 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
