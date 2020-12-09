@@ -72,6 +72,11 @@ export class RoomService {
     return this.roomRepository.save(room);
   }
 
+  async updateRoom(id: number, body: any): Promise<Room> {
+    await this.roomRepository.update(id, { ...body, status: RoomStatus.pending });
+    return this.findOne(id);
+  }
+
   async findAll(
     take = 21,
     skip = 0,

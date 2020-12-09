@@ -72,7 +72,8 @@ export class BookingService {
     const where: any = { user };
 
     if (arriveDate) where.arriveDate = MoreThanOrEqual(arriveDate);
-    if (endDate) where.endDate = LessThanOrEqual(endDate);
+    if (endDate) where.arriveDate = LessThanOrEqual(endDate);
+    if (arriveDate && endDate) where.arriveDate = Between(arriveDate, endDate);
 
     return this.bookingRepository.find({
       where,

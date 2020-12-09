@@ -32,7 +32,7 @@ class Bookings extends React.Component {
     this.updateRents()
   }
 
-  updateRents() {
+  updateRents = () => {
     bookingService.getRents()
       .then(rents => {
         this.setState({

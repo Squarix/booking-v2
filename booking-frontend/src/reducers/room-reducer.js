@@ -9,6 +9,14 @@ export const room = asyncField({
   },
 });
 
+export const updateRoom = asyncField({
+  reducerTemplate: asyncField.REDUCER_TEMPLATE.EDIT_MODEL,
+  actionOptions: {
+    uri: 'rooms',
+    method: asyncField.METHODS.PATCH,
+  }
+})
+
 export const bookings = asyncField({
   reducerTemplate: asyncField.REDUCER_TEMPLATE.MANY_MODELS,
   actionOptions: {
@@ -39,4 +47,5 @@ export default combineFieldReducers({
   bookings,
   createBooking,
   publicRooms,
+  updateRoom,
 });

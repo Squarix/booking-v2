@@ -1,0 +1,17 @@
+.room-filter__grid-item {
+    padding: 10px;
+}
+
+.room-filter__chips-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0.5rem;
+}
+
+.room-filter__chips-chip {
+    margin: 0.5rem;
+}
+.room-filter__add-button {
+    margin: 1.5rem;
+}

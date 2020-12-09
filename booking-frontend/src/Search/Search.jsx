@@ -58,7 +58,7 @@ class Search extends React.Component {
 
   handleInputChange = (e) => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
@@ -167,7 +167,7 @@ class Search extends React.Component {
   }
 
   onSortChange = ({ target: { value } }) => {
-    this.setState({ order: value }, () => {
+    this.setState({ order: value, page: 1 }, () => {
       this.handleSearch();
       this.openCloseSortMenu();
     });

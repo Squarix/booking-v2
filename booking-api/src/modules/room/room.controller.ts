@@ -10,7 +10,7 @@ import {
   Param,
   HttpException,
   HttpStatus,
-  Query,
+  Query, Patch, ForbiddenException,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { Room } from './room.entity';
@@ -22,7 +22,7 @@ import { FilterService } from '../filter/filter.service';
 import { City } from '../city/city.entity';
 import { CityService } from '../city/city.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { User } from '../users/user.entity';
+import {User, UserTypes} from '../users/user.entity';
 import { Booking } from '../booking/booking.entity';
 import { BookingService } from '../booking/booking.service';
 
@@ -91,6 +91,19 @@ export class RoomController {
     @Query('rooms') rooms: number,
   ) {
     return this.roomService.findAll(limit, offset, order, filters, address, guests, rooms);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async updateRoom(@Body() body, @Request() req, @Param('id') id: number) {
+    const { user } = req;
+    const room = await this.roomService.findOne(id);
+
+    if (room.user.id === user.id || user.type === UserTypes.moderator) {
+      return this.roomService.updateRoom(id, body);
+    }
+
+    throw new ForbiddenException('Вы кто такие чтобы это делать?');
   }
 
   @UseGuards(JwtAuthGuard)

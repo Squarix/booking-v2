@@ -136,7 +136,7 @@ class Home extends React.Component {
                 <TableCell align="center">
                   {room.guestsAmount}
                 </TableCell>
-                <TableCell align="center">{room.todayPrice}</TableCell>
+                <TableCell align="center">{room.price}</TableCell>
                 <TableCell align="center">{room.size}</TableCell>
                 <TableCell align="center">{room.user.email}</TableCell>
                 <TableCell>
