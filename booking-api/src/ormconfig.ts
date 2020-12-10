@@ -46,7 +46,7 @@ export const dbConfig: {
   analyst: {
     name: ANALYST_DB_NAME,
     type: 'postgres',
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_ANALYST_HOST || 'localhost',
     port: Number.parseInt(process.env.DB_PORT) || 5432,
     username: 'admin',
     password: 'admin',
