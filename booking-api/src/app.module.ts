@@ -15,10 +15,14 @@ import { BookingModule } from './modules/booking/booking.module';
 import { CategoryModule } from './modules/category/category.module';
 import { FilterModule } from './modules/filter/filter.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { AnalystModule } from './modules/analyst/analyst.module';
+
+import { dbConfig } from './ormconfig';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot(dbConfig.application),
+    TypeOrmModule.forRoot(dbConfig.analyst),
     AuthModule,
     CityModule,
     CountryModule,
@@ -32,6 +36,7 @@ import { AdminModule } from './modules/admin/admin.module';
       dest: '../uploads',
     }),
     AdminModule,
+    AnalystModule,
   ],
   controllers: [AppController],
   providers: [AppService],

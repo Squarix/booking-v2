@@ -29,10 +29,6 @@ class Home extends React.Component {
     this.updateRooms()
   }
 
-  closeSnackbar = () => {
-    this.setState({ snackbar: { open: false, message: '' }})
-  }
-
   getSnackBar() {
     const { snackbar: { open, type, message } } = this.state;
     if (!open) return null;
@@ -51,34 +47,6 @@ class Home extends React.Component {
     )
   }
 
-  async changeStatus(status, roomId) {
-    await this.props.editRoom({ id: roomId, body: { status }});
-    let message; let type;
-    if (this.props.editRoomSuccess) {
-      message = 'Room successfully edited';
-      type = 'success'
-      this.updateRooms();
-    } else if (this.props.editRoomError) {
-      message = `Room edit was failed: ${  this.props.editRoomError}`;
-      type = 'error';
-    }
-
-    this.setState({ snackbar: { type, message, open: true }});
-  }
-
-  updateRooms = () => {
-    const { limit, page } = this.state;
-    const urlParams = new URLSearchParams();
-    urlParams.append('offset', String(limit * (page - 1)));
-    urlParams.append('limit', limit);
-
-    this.props.fetchRooms({ urlParams });
-  }
-
-  onPageChange = page => {
-    this.setState({ page }, this.updateRooms);
-  }
-
   getPagination() {
     const { page, limit } = this.state;
     const { roomsCount } = this.props;
@@ -94,6 +62,38 @@ class Home extends React.Component {
         />
       </div>
     )
+  }
+
+  updateRooms = () => {
+    const { limit, page } = this.state;
+    const urlParams = new URLSearchParams();
+    urlParams.append('offset', String(limit * (page - 1)));
+    urlParams.append('limit', limit);
+
+    this.props.fetchRooms({ urlParams });
+  }
+
+  onPageChange = page => {
+    this.setState({ page }, this.updateRooms);
+  }
+
+  closeSnackbar = () => {
+    this.setState({ snackbar: { open: false, message: '' }})
+  }
+
+  async changeStatus(status, roomId) {
+    await this.props.editRoom({ id: roomId, body: { status }});
+    let message; let type;
+    if (this.props.editRoomSuccess) {
+      message = 'Room successfully edited';
+      type = 'success'
+      this.updateRooms();
+    } else if (this.props.editRoomError) {
+      message = `Room edit was failed: ${  this.props.editRoomError}`;
+      type = 'error';
+    }
+
+    this.setState({ snackbar: { type, message, open: true }});
   }
 
 
@@ -117,8 +117,8 @@ class Home extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rooms.map((room, index) => (
-              <TableRow key={index}>
+            {rooms.map(room => (
+              <TableRow key={room.id}>
                 <TableCell component="th" scope="row">
                   <a href={`/rooms/${room.id}`}>
                     {room.id}

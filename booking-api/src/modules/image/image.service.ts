@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import * as fs from 'fs';
 import * as path from 'path';
 import * as gm from 'gm';
 import { v4 as uuid } from 'uuid';
@@ -36,6 +35,6 @@ export class ImageService {
           if (!err) resolve(uniqueFileName);
           reject(err);
         });
-    })
+    });
   }
 }

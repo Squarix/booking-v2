@@ -18,11 +18,10 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToClass } from 'class-transformer';
-import { ReturnUserDto } from './dto/return-user.dto';
 import { Booking } from '../booking/booking.entity';
 import { BookingService } from '../booking/booking.service';
-import {RoomService} from "../room/room.service";
-import {Room} from "../room/room.entity";
+import { RoomService } from '../room/room.service';
+import { Room } from '../room/room.entity';
 
 @Controller('users')
 export class UsersController {

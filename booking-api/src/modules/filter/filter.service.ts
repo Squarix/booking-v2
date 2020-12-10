@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Room } from '../room/room.entity';
 import { Repository } from 'typeorm';
-import { ImageService } from '../image/image.service';
-import { CreateRoomDto } from '../room/dto/create-room.dto';
 import { Filter } from './filter.entity';
 import { CreateFilterDto } from './dto/create-filter.dto';
 import { Category } from '../category/category.entity';
@@ -43,11 +40,12 @@ export class FilterService {
     return filter;
   }
 
-  async getFilters(limit: number = 20): Promise<Filter[]> {
-    return this.filterRepository.createQueryBuilder('filter')
+  async getFilters(limit = 20): Promise<Filter[]> {
+    return this.filterRepository
+      .createQueryBuilder('filter')
       .innerJoinAndSelect('filter.rooms', 'rooms')
-      .loadRelationCountAndMap("filter.roomsCount", "filter.rooms")
-      .orderBy("filter.id", "DESC")
+      .loadRelationCountAndMap('filter.roomsCount', 'filter.rooms')
+      .orderBy('filter.id', 'DESC')
       .select(['filter.id', 'filter.filter', 'filter.categoryId'])
       .limit(limit)
       .getMany();

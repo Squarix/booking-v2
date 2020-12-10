@@ -2,14 +2,15 @@ version: '3.3'
 services:
   postgres:
     container_name: postgres_db
-    image: postgres:10-alpine
+    image: postgres:9.6.2
     ports:
       - '5433:5432'
     environment:
+      - POSTGRES_MULTIPLE_DATABASES="booking-api","booking-analyst"
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=booking-api
     volumes:
+      - ../docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
       - ./docker-volumes/postgresql:/var/lib/postgresql
   booking-api:
     build: ./booking-api

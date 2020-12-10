@@ -111,8 +111,7 @@ class Rooms extends Component {
               ))}
             </TableBody>
           </Table>
-          {this.getPagination()}
-        </Grid>
+          {this.getPagination()}        </Grid>
       </>
     )
   }

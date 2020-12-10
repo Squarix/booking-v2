@@ -14,5 +14,9 @@
      * правила, используемые в них, отключить,
      * это можно сделать тут
      */
+    "react/prop-types": 0,
+    "react/destructuring-assignment": 0,
+    "no-shadow": 0,
+    "react/state-in-constructor": 0
   }
 }
