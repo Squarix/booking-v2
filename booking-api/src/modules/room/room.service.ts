@@ -17,6 +17,19 @@ export class RoomService {
   ) {
   }
 
+  async findUserRooms(user: User, take: number = 20, skip: number = 0): Promise<ManyModelDto<Room>> {
+    const [result, count] = await this.roomRepository.findAndCount({
+      where: { user },
+      relations: ['city'],
+      skip,
+      take
+    });
+
+    return {
+      result, count
+    }
+  }
+
   async findOne(id: number) {
     return this.roomRepository.findOne({
       where: {id},

@@ -64,7 +64,7 @@ class Profile extends React.Component {
       <>
         <Container fixed>
           <Typography align="left" variant="h5" className={classes.userNameTitle}>
-            User: 
+            User:
             {' '}
             {this.state.email}
           </Typography>
@@ -77,6 +77,9 @@ class Profile extends React.Component {
               </div>
               <div>
                 <Button href="/profile/rents">Rents</Button>
+              </div>
+              <div>
+                <Button href="/profile/rooms">Rooms</Button>
               </div>
             </Grid>
             <Grid item md={8} xs={12}>

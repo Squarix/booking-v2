@@ -42,10 +42,19 @@ export const publicRooms = asyncField({
 })
 
 
+export const userRooms = asyncField({
+  reducerTemplate: asyncField.REDUCER_TEMPLATE.MANY_MODELS,
+  actionOptions: {
+    uri: 'users/profile/rooms',
+    method: asyncField.METHODS.GET
+  }
+})
+
 export default combineFieldReducers({
-  room,
   bookings,
   createBooking,
   publicRooms,
+  room,
   updateRoom,
+  userRooms,
 });

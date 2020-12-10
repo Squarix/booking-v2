@@ -21,12 +21,15 @@ import { plainToClass } from 'class-transformer';
 import { ReturnUserDto } from './dto/return-user.dto';
 import { Booking } from '../booking/booking.entity';
 import { BookingService } from '../booking/booking.service';
+import {RoomService} from "../room/room.service";
+import {Room} from "../room/room.entity";
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly bookingService: BookingService,
+    private readonly roomService: RoomService,
   ) {}
 
   @Post()
@@ -77,6 +80,16 @@ export class UsersController {
   @Get('profile/rents')
   findUserRents(@Request() req): Promise<Booking[]> {
     return this.bookingService.getUserRents(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile/rooms')
+  findUserRooms(
+    @Request() req,
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+  ): Promise<ManyModelDto<Room>> {
+    return this.roomService.findUserRooms(req.user, limit, offset);
   }
 
   @Delete(':id')

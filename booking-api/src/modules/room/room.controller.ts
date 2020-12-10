@@ -10,7 +10,7 @@ import {
   Param,
   HttpException,
   HttpStatus,
-  Query, Patch, ForbiddenException,
+  Query, Patch, ForbiddenException, NotFoundException,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { Room } from './room.entity';
@@ -98,6 +98,9 @@ export class RoomController {
   async updateRoom(@Body() body, @Request() req, @Param('id') id: number) {
     const { user } = req;
     const room = await this.roomService.findOne(id);
+
+    if (!room)
+      throw new NotFoundException('Куда ты звонишь?');
 
     if (room.user.id === user.id || user.type === UserTypes.moderator) {
       return this.roomService.updateRoom(id, body);
