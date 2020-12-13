@@ -12,4 +12,11 @@ export class FocusImageEvent {
   @Column()
   @IsNotEmpty()
   roomId: number;
+
+  @Column()
+  @IsNotEmpty()
+  imageId: number;
+
+  @Column({ default: null, nullable: true })
+  userId: number;
 }

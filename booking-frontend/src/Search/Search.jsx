@@ -10,7 +10,6 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
 
-
 import ApartmentIcon from '@material-ui/icons/Apartment';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
@@ -27,17 +26,14 @@ import { menuProps } from "./constants";
 import MapComponent from "./components/google-map";
 import RoomRow from "../Room/components/room-row";
 import { filters } from "../reducers/filter-reducer";
-import { publicRooms, room } from "../reducers/room-reducer";
+import { publicRooms } from "../reducers/room-reducer";
 import Index from '../Room/components/room-card';
 import Menu from '../Layouts/Menu';
 import styles from './styles';
+import { analystRoomFocusAction, analystViewAction } from "../global-analyst";
 
 
 class Search extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     priceMax: 1000,
     priceMin: 0,
@@ -68,7 +64,7 @@ class Search extends React.Component {
     })
   }
 
-  handleSearch = async () => {
+  getRequestParams = () => {
     const { guests, size, address, rooms, selectedFilters, order, page, limit } = this.state;
     const params = new URLSearchParams();
 
@@ -89,8 +85,12 @@ class Search extends React.Component {
       params.append(key, requestParams[key]);
     })
 
-    await this.props.fetchRooms({ urlParams: params });
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth'});
+    return params;
+  }
+
+  handleSearch = async () => {
+    await this.props.fetchRooms({ urlParams: this.getRequestParams() });
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
 
   chipClicked = id => {
@@ -116,7 +116,7 @@ class Search extends React.Component {
         label={filter}
         variant={getVariant(selectedFilters[id])}
       />
-    )
+      )
     )
   }
 
@@ -142,14 +142,32 @@ class Search extends React.Component {
     )
   }
 
+  handleView = id => {
+    analystViewAction(id, this.getRequestParams().toString())
+  }
+
+  handleFocus = id => {
+    let date;
+    return (isBlur = false) => {
+      if (isBlur) {
+        const time = new Date() - date;
+        if (time >= 4000) {
+          analystRoomFocusAction(id, time, this.getRequestParams().toString());
+        }
+      } else {
+        date = new Date()
+      }
+    }
+  }
+
   getItemsContainer() {
     const { viewMode } = this.state;
     if (viewMode === 'default')
       return this.props.rooms?.map(room => (
         <Grid key={room.id} xs={12} item>
-          <RoomRow {...room} />
+          <RoomRow onFocus={this.handleFocus(room.id)} onClick={() => this.handleView(room.id)} {...room} />
         </Grid>
-      )
+        )
       )
 
     const markers = this.props.rooms?.map(
@@ -173,7 +191,7 @@ class Search extends React.Component {
     });
   }
 
-  changeViewMode = ({ target: { checked }}) => {
+  changeViewMode = ({ target: { checked } }) => {
     this.setState({ viewMode: checked ? 'map' : 'default' });
   }
 

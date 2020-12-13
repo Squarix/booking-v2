@@ -13,9 +13,12 @@ export class FocusEvent {
   @IsNotEmpty()
   roomId: number;
 
-  @Column()
+  @Column({ default: null, nullable: true })
   query: string;
 
-  @Column()
+  @Column({ default: null, nullable: true })
+  userId: number;
+
+  @Column({ default: null, nullable: true })
   time: number;
 }

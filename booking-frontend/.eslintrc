@@ -17,6 +17,10 @@
     "react/prop-types": 0,
     "react/destructuring-assignment": 0,
     "no-shadow": 0,
-    "react/state-in-constructor": 0
+    "react/state-in-constructor": 0,
+    "react/sort-comp": 0,
+    "consistent-return": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/prefer-stateless-function": 0
   }
 }

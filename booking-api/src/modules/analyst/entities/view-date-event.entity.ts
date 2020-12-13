@@ -12,4 +12,7 @@ export class ViewDateEvent {
   @Column()
   @IsNotEmpty()
   roomId: number;
+
+  @Column({ default: null, nullable: true })
+  userId: number;
 }

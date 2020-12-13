@@ -53,5 +53,6 @@ export const dbConfig: {
     database: 'booking-analyst',
     entities: AnalystEntities,
     synchronize: true,
+    logging: true,
   },
 };

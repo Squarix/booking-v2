@@ -10,7 +10,10 @@ import {
   Param,
   HttpException,
   HttpStatus,
-  Query, Patch, ForbiddenException, NotFoundException,
+  Query,
+  Patch,
+  ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { Room } from './room.entity';
@@ -22,12 +25,13 @@ import { FilterService } from '../filter/filter.service';
 import { City } from '../city/city.entity';
 import { CityService } from '../city/city.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import {User, UserTypes} from '../users/user.entity';
+import { User, UserTypes } from '../users/user.entity';
 import { Booking } from '../booking/booking.entity';
 import { BookingService } from '../booking/booking.service';
 
 import { DATE_ALREADY_BOOKED_MESSAGE } from './constants';
 import { daysBetween } from './room.helper';
+import {EventsGateway} from "../events/events.gateway";
 
 @Controller('rooms')
 export class RoomController {
@@ -37,6 +41,7 @@ export class RoomController {
     private readonly filterService: FilterService,
     private readonly imageService: ImageService,
     private readonly roomService: RoomService,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   @Get(':id')
@@ -72,12 +77,16 @@ export class RoomController {
     }
 
     const totalDays: number = daysBetween(body.arriveDate, body.endDate);
-    return this.bookingService.create(
+    const booking = await this.bookingService.create(
       req.user,
       body,
       room.price * totalDays,
       room,
     );
+
+    this.eventsGateway.server.to(String(id)).emit('newBooking', booking);
+
+    return booking;
   }
 
   @Get('/')
@@ -90,7 +99,15 @@ export class RoomController {
     @Query('guests') guests: number,
     @Query('rooms') rooms: number,
   ) {
-    return this.roomService.findAll(limit, offset, order, filters, address, guests, rooms);
+    return this.roomService.findAll(
+      limit,
+      offset,
+      order,
+      filters,
+      address,
+      guests,
+      rooms,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -99,8 +116,7 @@ export class RoomController {
     const { user } = req;
     const room = await this.roomService.findOne(id);
 
-    if (!room)
-      throw new NotFoundException('Куда ты звонишь?');
+    if (!room) throw new NotFoundException('Куда ты звонишь?');
 
     if (room.user.id === user.id || user.type === UserTypes.moderator) {
       return this.roomService.updateRoom(id, body);

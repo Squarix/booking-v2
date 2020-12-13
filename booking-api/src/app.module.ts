@@ -3,19 +3,20 @@ import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Connection } from 'typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './modules/users/users.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { CountryModule } from './modules/country/country.module';
-import { CityModule } from './modules/city/city.module';
-import { RoomModule } from './modules/room/room.module';
-import { ImageModule } from './modules/image/image.module';
-import { BookingModule } from './modules/booking/booking.module';
-import { CategoryModule } from './modules/category/category.module';
-import { FilterModule } from './modules/filter/filter.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AnalystModule } from './modules/analyst/analyst.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { CategoryModule } from './modules/category/category.module';
+import { CityModule } from './modules/city/city.module';
+import { CountryModule } from './modules/country/country.module';
+import { EventsModule } from './modules/events/events.module';
+import { FilterModule } from './modules/filter/filter.module';
+import { ImageModule } from './modules/image/image.module';
+import { RoomModule } from './modules/room/room.module';
+import { UsersModule } from './modules/users/users.module';
 
 import { dbConfig } from './ormconfig';
 
@@ -23,20 +24,21 @@ import { dbConfig } from './ormconfig';
   imports: [
     TypeOrmModule.forRoot(dbConfig.application),
     TypeOrmModule.forRoot(dbConfig.analyst),
+    AdminModule,
+    AnalystModule,
     AuthModule,
-    CityModule,
-    CountryModule,
-    UsersModule,
-    RoomModule,
-    ImageModule,
     BookingModule,
     CategoryModule,
+    CityModule,
+    CountryModule,
+    EventsModule,
     FilterModule,
+    ImageModule,
     MulterModule.register({
       dest: '../uploads',
     }),
-    AdminModule,
-    AnalystModule,
+    RoomModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

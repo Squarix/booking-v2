@@ -104,7 +104,7 @@ class UpdateRoom extends Component {
 
     return (
       <>
-        <Menu/>
+        <Menu />
         <Container fixed>
           <Grid className={classes.container} container>
             <Formik

@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { BookingModule } from '../booking/booking.module';
 import { CityModule } from '../city/city.module';
+import { EventsModule } from '../events/events.module';
 import { FilterModule } from '../filter/filter.module';
 import { ImageModule } from '../image/image.module';
 
@@ -17,6 +18,7 @@ import { RoomService } from './room.service';
     ImageModule,
     FilterModule,
     CityModule,
+    EventsModule,
   ],
   providers: [RoomService],
   controllers: [RoomController],

@@ -5,7 +5,7 @@ import './index.css';
 
 export function OutlineTextField(props) {
   return (
-    <TextField {...props} variant="outlined" className="width-100"/>
+    <TextField {...props} variant="outlined" className="width-100" />
   );
 }
 

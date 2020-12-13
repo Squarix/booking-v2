@@ -65,7 +65,7 @@ export default function Menu() {
   };
 
   const getMenuItem = (to, primary) => (
-    <Link underline='none' color='black' to={to}>
+    <Link underline='none' color='black' to={to} key={to}>
       <ListItem button>
         <ListItemText className="link-black" primary={primary} />
       </ListItem>
@@ -87,7 +87,7 @@ export default function Menu() {
       <List>
         {!auth.loggedIn() ?
           authMenuItems.map(({ to, primary }) => getMenuItem(to, primary)) : (
-            <ListItem button>
+            <ListItem key="log-out" button>
               <MaterialLink underline='none' onClick={logOut}>
                 <ListItemText className="link-black" primary="Sign out" />
               </MaterialLink>

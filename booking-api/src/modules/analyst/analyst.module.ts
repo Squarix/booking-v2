@@ -8,6 +8,7 @@ import { FocusImageEvent } from './entities/focus-image-event.entity';
 import { ViewDateEvent } from './entities/view-date-event.entity';
 import { ViewEvent } from './entities/view-event.entity';
 import { ANALYST_DB_NAME } from '../../ormconfig';
+import { RoomModule } from '../room/room.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ANALYST_DB_NAME } from '../../ormconfig';
       [FocusEvent, FocusImageEvent, ViewEvent, ViewDateEvent],
       ANALYST_DB_NAME,
     ),
+    RoomModule,
   ],
   controllers: [AnalystController],
   providers: [AnalystService],

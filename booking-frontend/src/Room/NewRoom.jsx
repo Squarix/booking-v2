@@ -138,7 +138,7 @@ class NewRoom extends React.Component {
     const { countries, filterCategories } = this.state;
     return (
       <>
-        <Menu/>
+        <Menu />
         <Container fixed>
           <Grid className={classes.container} container>
             <Formik
@@ -163,7 +163,7 @@ class NewRoom extends React.Component {
                         InputProps={{ name: 'country', id: 'country' }}
                         disabled
                       >
-                        <MenuItem value=""/>
+                        <MenuItem value="" />
                         {countries.map(country =>
                           <MenuItem key={country.id} value={country.id}>{country.name}</MenuItem>
                         )}
@@ -231,17 +231,17 @@ class NewRoom extends React.Component {
                     />
                   </Grid>
                   <Grid item xs={12} className={classes.gridItem}>
-                    <RoomFilter categories={filterCategories}/>
+                    <RoomFilter categories={filterCategories} />
                   </Grid>
                   <Grid item xs={12} className={classes.gridItem}>
-                    <RoomImages/>
+                    <RoomImages />
                   </Grid>
                   <Grid item xs={12} className={classes.gridItem}>
-                    <RoomMap countries={this.state.countries} cityName="city" countryName="country"/>
+                    <RoomMap countries={this.state.countries} cityName="city" countryName="country" />
                   </Grid>
                   <Grid item xs={12} className={classes.gridItem}>
                     {this.state.isFetching ?
-                      <CircularProgress size={32} className={classes.submitButton}/> : (
+                      <CircularProgress size={32} className={classes.submitButton} /> : (
                         <Button variant="contained" color="primary" className={classes.submitButton} type="submit">
                           Submit
                         </Button>

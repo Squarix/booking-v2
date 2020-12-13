@@ -13,6 +13,12 @@ export class ViewEvent {
   @IsNotEmpty()
   roomId: number;
 
-  @Column()
+  @Column({ default: '' })
+  query: string;
+
+  @Column({ default: null, nullable: true })
+  userId: number;
+
+  @Column({ default: null, nullable: true })
   time: number;
 }

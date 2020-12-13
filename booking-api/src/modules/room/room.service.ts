@@ -1,38 +1,50 @@
-import {Injectable} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {In, Like, Repository} from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Like, Repository } from 'typeorm';
 
-import {Room, RoomStatus} from './room.entity';
-import {CreateRoomDto} from './dto/create-room.dto';
-import {Image} from '../image/image.entity';
-import {Filter} from '../filter/filter.entity';
-import {City} from '../city/city.entity';
-import {User} from '../users/user.entity';
+import { Room, RoomStatus } from './room.entity';
+import { CreateRoomDto } from './dto/create-room.dto';
+import { Image } from '../image/image.entity';
+import { Filter } from '../filter/filter.entity';
+import { City } from '../city/city.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class RoomService {
   constructor(
     @InjectRepository(Room)
     private roomRepository: Repository<Room>,
-  ) {
+  ) {}
+
+  async findUserRoomIds(user: User): Promise<Room[]> {
+    return this.roomRepository
+      .createQueryBuilder('room')
+      .select('"id"')
+      .where('"userId" = :userId', { userId: user.id })
+      .getRawMany();
   }
 
-  async findUserRooms(user: User, take: number = 20, skip: number = 0): Promise<ManyModelDto<Room>> {
+  async findUserRooms(
+    user: User,
+    take = 20,
+    skip = 0,
+  ): Promise<ManyModelDto<Room>> {
     const [result, count] = await this.roomRepository.findAndCount({
       where: { user },
       relations: ['city'],
       skip,
-      take
+      take,
     });
 
     return {
-      result, count
-    }
+      result,
+      count,
+    };
   }
 
   async findOne(id: number) {
     return this.roomRepository.findOne({
-      where: {id},
+      where: { id },
       relations: ['city', 'user', 'images', 'bookings', 'filters'],
     });
   }
@@ -62,20 +74,18 @@ export class RoomService {
     return this.roomRepository.save(room);
   }
 
-  async findAllPending (
-    take = 21,
-    skip = 0
-  ): Promise<ManyModelDto<Room>> {
+  async findAllPending(take = 21, skip = 0): Promise<ManyModelDto<Room>> {
     const [result, count] = await this.roomRepository.findAndCount({
       relations: ['city', 'user'],
       where: { status: RoomStatus.pending },
       skip,
-      take
+      take,
     });
 
     return {
-      result, count
-    }
+      result,
+      count,
+    };
   }
 
   async changeStatus(id: number, newStatus: RoomStatus): Promise<Room> {
@@ -86,7 +96,10 @@ export class RoomService {
   }
 
   async updateRoom(id: number, body: any): Promise<Room> {
-    await this.roomRepository.update(id, { ...body, status: RoomStatus.pending });
+    await this.roomRepository.update(id, {
+      ...body,
+      status: RoomStatus.pending,
+    });
     return this.findOne(id);
   }
 
@@ -97,9 +110,10 @@ export class RoomService {
     filters: string,
     address: string,
     guests: number,
-    rooms: number
+    rooms: number,
   ): Promise<ManyModelDto<Room>> {
-    const query = this.roomRepository.createQueryBuilder('r')
+    const query = this.roomRepository
+      .createQueryBuilder('r')
       .leftJoinAndSelect('r.image', 'image')
       .leftJoinAndSelect('r.filters', 'filters')
       .leftJoinAndSelect('r.city', 'city')
@@ -108,20 +122,21 @@ export class RoomService {
       .where('status = :status', { status: RoomStatus.published });
 
     if (filters) {
-      const filtersArray = filters.split(',').map(f => Number.parseInt(f));
-      query.andWhere('filters.id in (:...filters)', {filters: filtersArray});
+      const filtersArray = filters.split(',').map((f) => Number.parseInt(f));
+      query.andWhere('filters.id in (:...filters)', { filters: filtersArray });
     }
-    if (address) query.andWhere("address LIKE :address",  { address: `%${address}%` });
+    if (address)
+      query.andWhere('address LIKE :address', { address: `%${address}%` });
     if (guests) query.andWhere('r."guestsAmount" = :guests', { guests });
-    if (rooms) query.andWhere('size = :rooms', {rooms});
+    if (rooms) query.andWhere('size = :rooms', { rooms });
 
     if (order) query.orderBy('r.price', order);
-
 
     const [result, count] = await query.getManyAndCount();
 
     return {
-      result, count
-    }
+      result,
+      count,
+    };
   }
 }

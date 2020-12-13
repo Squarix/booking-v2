@@ -2,10 +2,10 @@ import React from 'react';
 
 import './index.css'
 import ApartmentIcon from "@material-ui/icons/Apartment";
-import { Tooltip } from "@material-ui/core";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import GroupIcon from "@material-ui/icons/Group";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
+import { Tooltip } from "@material-ui/core";
+
 import { apiUrl } from "../../../_services/config";
 import NoPhotoPlaceholder from "../no-photo";
 
@@ -15,10 +15,16 @@ export default function RoomRow(props) {
   );
 
   return (
-    <a href={`/rooms/${props.id}`} className="room-row__container">
+    <a
+      href={`/rooms/${props.id}`}
+      onClick={props.onClick}
+      onMouseEnter={() => props.onFocus()}
+      onMouseOut={() => props.onFocus(true)}
+      className="room-row__container"
+    >
       <div className="room-row__image-container">
         {props.image?.path ? (
-          <img className="room-row__image" src={`${apiUrl}/${props.image?.path}`} />
+          <img className="room-row__image" alt="" src={`${apiUrl}/${props.image?.path}`} />
         ) : (
           <NoPhotoPlaceholder className="room-row__image" />
         )}
@@ -34,21 +40,21 @@ export default function RoomRow(props) {
           <div className="room-row__action-container">
             <Tooltip title={getTooltipTitle('Guests amount')}>
               <div className="room-row__action-item">
-                <GroupIcon fontSize="12px" /> 
+                <GroupIcon fontSize="12px" />
                 {' '}
                 <span>{props.guestsAmount}</span>
               </div>
             </Tooltip>
             <Tooltip title={getTooltipTitle('Address')}>
               <div className="room-row__action-item">
-                <LocationOnIcon fontSize="12px" /> 
+                <LocationOnIcon fontSize="12px" />
                 {' '}
                 <span>{props.address}</span>
               </div>
             </Tooltip>
             <Tooltip title={getTooltipTitle('Rooms amount')}>
               <div className="room-row__action-item">
-                <ApartmentIcon fontSize="12px" /> 
+                <ApartmentIcon fontSize="12px" />
                 {' '}
                 <span>{props.size}</span>
               </div>

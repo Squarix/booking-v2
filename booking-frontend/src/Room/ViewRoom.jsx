@@ -21,7 +21,7 @@ import io from 'socket.io-client';
 
 import DatePicker from "react-datepicker";
 import Button from "@material-ui/core/Button";
-import Redirect from "react-router-dom/es/Redirect";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Alert } from "@material-ui/lab";
 import InfoDialog from "../Layouts/InfoDialog";
@@ -30,20 +30,21 @@ import { bookings, createBooking, room } from "../reducers/room-reducer";
 import { apiUrl } from "../_services/config";
 import styles from './styles';
 import MapComponent from "../Search/components/google-map";
+import { analystImageFocusAction, analystViewDatesAction } from "../global-analyst";
 
 class ViewRoom extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.io = io(apiUrl);
-    // this.io.on('connect', () => {
-    //   this.io.emit('joinRoom', { id: this.props.match.params.id });
-    //   this.io.on('newBooking', booking => {
-    //     const { bookedDates } = this.state;
-    //     bookedDates.push(booking);
-    //     this.setState({ bookedDates });
-    //   })
-    // })
+    this.io = io(apiUrl);
+    this.io.on('connect', () => {
+      this.io.emit('joinRoom', { id: this.props.match.params.id });
+      this.io.on('newBooking', booking => {
+        const { bookedDates } = this.state;
+        bookedDates.push(booking);
+        this.setState({ bookedDates });
+      })
+    })
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -55,7 +56,7 @@ class ViewRoom extends React.Component {
 
       snackbar: {},
       dialogOpen: false,
-      title: 'Booking Info'
+      bookedDates: [],
     }
   }
 
@@ -143,10 +144,43 @@ class ViewRoom extends React.Component {
     )
   }
 
+  onDatesOpen = () => {
+    if (!this.datesOpened) {
+      this.datesOpened = true;
+      analystViewDatesAction(this.props.room.id);
+    }
+  }
+
+  onImageFocus = id => {
+    let start;
+    return (isMouseOut = false) => {
+      const { room: { id: roomId } } = this.props;
+      if (isMouseOut) {
+        const time = new Date() - start;
+        if (time > 10 * 1000) {
+          analystImageFocusAction(roomId, id);
+        }
+      } else {
+        start = new Date();
+      }
+    }
+  }
+
+  getImageFocusHandler = id => {
+    const handler = this.onImageFocus(id);
+    return {
+      onMouseEnter: () => handler(),
+      onMouseOut: () => handler(true),
+    }
+  }
+
   render() {
     const { classes, room, bookings } = this.props;
+    const { bookedDates } = this.state;
     if (!room)
       return null;
+
+    const mergedBookings = [...bookings, ...bookedDates];
 
     return (
       <>
@@ -157,7 +191,10 @@ class ViewRoom extends React.Component {
               <Typography variant="h1" className={classes.header}>{room.address}</Typography>
               <Carousel className={classes.carousel}>
                 {room.images.map(image => (
-                  <div className={classes.roomImageDiv}>
+                  <div
+                    className={classes.roomImageDiv}
+                    {...this.getImageFocusHandler(image.id)}
+                  >
                     <img src={`${apiUrl}/${image.path}`} className={classes.roomImage} />
                   </div>
                 )
@@ -209,9 +246,10 @@ class ViewRoom extends React.Component {
                     selected={this.state.startDate}
                     className={classes.datePicker}
                     onChange={this.onStartDateChange}
+                    onCalendarOpen={this.onDatesOpen}
                     placeholderText="Select start date"
                     dateFormat="d MMMM yyyy"
-                    filterDate={(date) => isValidDate(bookings, date, null, this.state.endDate)}
+                    filterDate={(date) => isValidDate(mergedBookings, date, null, this.state.endDate)}
                   />
                 </ListItem>
                 <ListItem className={classes.label}>
@@ -222,7 +260,7 @@ class ViewRoom extends React.Component {
                     onChange={this.onEndDateChange}
                     placeholderText="Select end date"
                     dateFormat="d MMMM yyyy"
-                    filterDate={(date) => isValidDate(bookings, date, this.state.startDate, null)}
+                    filterDate={(date) => isValidDate(mergedBookings, date, this.state.startDate, null)}
                   />
                 </ListItem>
                 {!!this.state.totalPrice && (
@@ -264,6 +302,16 @@ class ViewRoom extends React.Component {
   }
 }
 
+
+function checkDate(dates, searchDate) {
+  for (const date of dates) {
+    if (new Date(date.arriveDate) <= searchDate && searchDate <= new Date(date.endDate))
+      return false
+  }
+
+  return true;
+}
+
 function isValidDate(bookedDates = [], date, startDate, endDate) {
   let minDate = new Date();
   minDate.setHours(0, 0, 0, 0);
@@ -275,15 +323,6 @@ function isValidDate(bookedDates = [], date, startDate, endDate) {
   maxDate = endDate || maxDate;
 
   return (checkDate(bookedDates, date) && (date > minDate) && (date < maxDate))
-}
-
-function checkDate(dates, searchDate) {
-  for (const date of dates) {
-    if (new Date(date.arriveDate) <= searchDate && searchDate <= new Date(date.endDate))
-      return false
-  }
-
-  return true;
 }
 
 function getDifferenceInDays(startDate, endDate) {
