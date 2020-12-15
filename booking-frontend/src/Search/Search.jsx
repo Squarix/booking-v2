@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import ApartmentIcon from '@material-ui/icons/Apartment';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ExploreIcon from '@material-ui/icons/Explore';
 import GroupIcon from "@material-ui/icons/Group";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import SortIcon from '@material-ui/icons/Sort';
@@ -48,6 +49,7 @@ class Search extends React.Component {
     sortingSelect: false,
     order: '',
     viewMode: 'default',
+    city: '',
 
     rooms: []
   }
@@ -65,14 +67,14 @@ class Search extends React.Component {
   }
 
   getRequestParams = () => {
-    const { guests, size, address, rooms, selectedFilters, order, page, limit } = this.state;
+    const { guests, size, address, rooms, selectedFilters, order, page, limit, city } = this.state;
     const params = new URLSearchParams();
 
     params.append('offset', String((page - 1) * limit));
     params.append('limit', limit);
 
     const requestParams = Object
-      .keys({ guests, size, address, rooms, order })
+      .keys({ guests, size, address, rooms, order, city })
       .filter(key => this.state[key])
       .reduce((acc, cur) => {
         acc[cur] = this.state[cur];
@@ -245,6 +247,13 @@ class Search extends React.Component {
               </IconButton>
             </Grid>
             <Grid item xs={12} md={3}>
+              <BookingTextField
+                name="city"
+                value={this.state.city}
+                onChange={this.handleInputChange}
+                className={classes.textField}
+                icon={<ExploreIcon />}
+              />
               <BookingTextField
                 name="guests"
                 value={this.state.guests}

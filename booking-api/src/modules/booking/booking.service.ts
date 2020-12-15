@@ -1,9 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import {
+  Between,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 
 import { Booking, BookingStatus } from './booking.entity';
-import { Room } from '../room/room.entity';
+import { Room, RoomStatus } from '../room/room.entity';
 import { User } from '../users/user.entity';
 
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -32,7 +38,9 @@ export class BookingService {
   }
 
   async getRoomBookings(room): Promise<Booking[]> {
-    return this.bookingRepository.find({ where: { room } });
+    return this.bookingRepository.find({
+      where: { room, status: Not(BookingStatus.declined) },
+    });
   }
 
   async getBookingBetweenDates(
@@ -45,10 +53,12 @@ export class BookingService {
         {
           room,
           arriveDate: Between(arriveDate, endDate),
+          status: Not(BookingStatus.declined),
         },
         {
           room,
           endDate: Between(arriveDate, endDate),
+          status: Not(BookingStatus.declined),
         },
       ],
     });

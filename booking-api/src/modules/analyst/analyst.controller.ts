@@ -37,9 +37,13 @@ export class AnalystController {
 
     const topViews = await this.analystService.getTopViews(roomIds);
     const topQueries = await this.analystService.getTopQueries(roomIds);
+    const formattedTopQueries = topQueries.map((q) => ({
+      ...q,
+      query: this.formatQuery(q.query),
+    }));
     const topDate = await this.analystService.getTopDateViews(roomIds);
 
-    return { topViews, topQueries, topDate };
+    return { topViews, topQueries: formattedTopQueries, topDate };
   }
 
   @UseGuards(JwtAuthGuard)
@@ -63,5 +67,17 @@ export class AnalystController {
       default:
         throw new BadRequestException();
     }
+  }
+
+  private formatQuery(query: string): string {
+    return decodeURI(query)
+      .split('&')
+      .map((q) =>
+        q
+          .split('=')
+          .filter((q) => q[0] && q[1])
+          .join(' '),
+      )
+      .join(' | ');
   }
 }

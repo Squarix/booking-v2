@@ -111,6 +111,7 @@ export class RoomService {
     address: string,
     guests: number,
     rooms: number,
+    city: string,
   ): Promise<ManyModelDto<Room>> {
     const query = this.roomRepository
       .createQueryBuilder('r')
@@ -129,6 +130,7 @@ export class RoomService {
       query.andWhere('address LIKE :address', { address: `%${address}%` });
     if (guests) query.andWhere('r."guestsAmount" = :guests', { guests });
     if (rooms) query.andWhere('size = :rooms', { rooms });
+    if (city) query.andWhere('city."name" LIKE :city', { city: `%${city}%` });
 
     if (order) query.orderBy('r.price', order);
 

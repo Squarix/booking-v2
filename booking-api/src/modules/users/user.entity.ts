@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeo
 import { IsEmail, IsNotEmpty, MaxLength } from 'class-validator';
 import { Room } from '../room/room.entity';
 import { Booking } from '../booking/booking.entity';
+import {classToPlain, Exclude} from "class-transformer";
 
 export enum UserTypes {
   moderator = 'moderator',
@@ -33,6 +34,7 @@ export class User {
   type: UserTypes;
 
   @Column()
+  @Exclude({ toPlainOnly: true })
   password: string;
 
   @OneToMany((type) => Room, (room) => room.user)
@@ -40,4 +42,8 @@ export class User {
 
   @OneToMany((type) => Booking, (booking) => booking.room)
   bookings: Booking[];
+
+  toJSON() {
+    return classToPlain(this);
+  }
 }

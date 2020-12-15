@@ -32,8 +32,8 @@ export default function RoomRow(props) {
       <div className="room-row__data">
         <div className="room-row__data-top">
           <div className="room-row__header">
-            Appartments at
-            {props.city?.name}
+            Apartments at
+            {` ${  props.city?.name}`}
           </div>
           <div className="room-row__description">{props.description}</div>
           <div className="room-row__delimiter" />

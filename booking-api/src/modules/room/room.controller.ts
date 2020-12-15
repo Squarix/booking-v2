@@ -98,6 +98,7 @@ export class RoomController {
     @Query('address') address: string,
     @Query('guests') guests: number,
     @Query('rooms') rooms: number,
+    @Query('city') city: string,
   ) {
     return this.roomService.findAll(
       limit,
@@ -107,6 +108,7 @@ export class RoomController {
       address,
       guests,
       rooms,
+      city,
     );
   }
 

@@ -7,7 +7,7 @@ export const CHART_TITLE = {
 export const CHART_LABEL = {
   topViews: 'roomId',
   topQueries: 'query',
-  topDate: 'id'
+  topDate: 'roomId'
 }
 
 export const getChartLabelKey = id => CHART_LABEL[id];

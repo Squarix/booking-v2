@@ -121,8 +121,8 @@ export class AnalystService {
   async getTopDateViews(roomIds: number[] = null): Promise<ViewDateEvent[]> {
     const query = this.viewDateEventRepository
       .createQueryBuilder('view')
-      .select('COUNT("id") as "view_count", "id"')
-      .groupBy('"id"')
+      .select('COUNT("id") as "view_count", "roomId"')
+      .groupBy('"roomId"')
       .orderBy('"view_count"', 'DESC');
 
     if (roomIds) {
