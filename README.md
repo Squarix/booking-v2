@@ -12,6 +12,11 @@
 docker-compose -f ./docker-compose.production.yml up
 ```
 
+###### OR using script 
+* File `run.sh`
+* Make sure you made file executable `sudo chmod +x ./run.sh`
+* Run script with simple `./run.sh`
+
 ###### Also can be launched in separate mode
 * Use `cd ./booking-api & yarn start:debug` with booking-api for development purpose
 * Use `cd ./booking-frontend & yarn start` with booking-frontend for development purpose
