@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { BullModule } from "@nestjs/bull";
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 
 import { Connection } from 'typeorm';
 import { AdminModule } from './modules/admin/admin.module';
@@ -15,6 +17,7 @@ import { CountryModule } from './modules/country/country.module';
 import { EventsModule } from './modules/events/events.module';
 import { FilterModule } from './modules/filter/filter.module';
 import { ImageModule } from './modules/image/image.module';
+import { ImageAiModule } from './modules/image-ai/image-ai.module';
 import { RoomModule } from './modules/room/room.module';
 import { UsersModule } from './modules/users/users.module';
 
@@ -22,6 +25,7 @@ import { dbConfig } from './ormconfig';
 
 @Module({
   imports: [
+    BullModule.forRoot(dbConfig.redis),
     TypeOrmModule.forRoot(dbConfig.application),
     TypeOrmModule.forRoot(dbConfig.analyst),
     AdminModule,
@@ -34,6 +38,7 @@ import { dbConfig } from './ormconfig';
     EventsModule,
     FilterModule,
     ImageModule,
+    ImageAiModule,
     MulterModule.register({
       dest: '../uploads',
     }),

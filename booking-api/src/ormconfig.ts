@@ -32,11 +32,12 @@ export const ANALYST_DB_NAME = 'analyst_db';
 export const dbConfig: {
   application: TypeOrmModuleOptions;
   analyst: TypeOrmModuleOptions;
+  redis: any,
 } = {
   application: {
     type: 'postgres',
     host: process.env.DB_HOST || 'localhost',
-    port: Number.parseInt(process.env.DB_PORT) || 5432,
+    port: Number.parseInt(process.env.DB_PORT) || 5433,
     username: 'admin',
     password: 'admin',
     database: 'booking-api',
@@ -47,12 +48,18 @@ export const dbConfig: {
     name: ANALYST_DB_NAME,
     type: 'postgres',
     host: process.env.DB_ANALYST_HOST || 'localhost',
-    port: Number.parseInt(process.env.DB_PORT) || 5432,
+    port: Number.parseInt(process.env.DB_PORT) || 5434,
     username: 'admin',
     password: 'admin',
     database: 'booking-analyst',
     entities: AnalystEntities,
     synchronize: true,
     logging: true,
+  },
+  redis: {
+    redis: {
+      host: 'localhost',
+      port: 6380,
+    },
   },
 };

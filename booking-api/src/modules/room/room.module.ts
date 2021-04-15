@@ -6,6 +6,7 @@ import { CityModule } from '../city/city.module';
 import { EventsModule } from '../events/events.module';
 import { FilterModule } from '../filter/filter.module';
 import { ImageModule } from '../image/image.module';
+import { ImageAiModule } from '../image-ai/image-ai.module';
 
 import { Room } from './room.entity';
 import { RoomController } from './room.controller';
@@ -19,6 +20,7 @@ import { RoomService } from './room.service';
     FilterModule,
     CityModule,
     EventsModule,
+    ImageAiModule,
   ],
   providers: [RoomService],
   controllers: [RoomController],

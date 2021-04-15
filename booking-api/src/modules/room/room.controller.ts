@@ -29,9 +29,11 @@ import { User, UserTypes } from '../users/user.entity';
 import { Booking } from '../booking/booking.entity';
 import { BookingService } from '../booking/booking.service';
 
+import { EventsGateway } from '../events/events.gateway';
+import { ImageAiService } from '../image-ai/image-ai.service';
+
 import { DATE_ALREADY_BOOKED_MESSAGE } from './constants';
 import { daysBetween } from './room.helper';
-import {EventsGateway} from "../events/events.gateway";
 
 @Controller('rooms')
 export class RoomController {
@@ -42,6 +44,7 @@ export class RoomController {
     private readonly imageService: ImageService,
     private readonly roomService: RoomService,
     private readonly eventsGateway: EventsGateway,
+    private readonly imageAiService: ImageAiService,
   ) {}
 
   @Get(':id')
@@ -135,8 +138,9 @@ export class RoomController {
     @Request() req,
     @Body() body,
   ): Promise<Room> {
-    const { filters: strFilters, roomParams: strRoomParams, mainImage } = body;
+    const { filters: strFilters = '{}', roomParams: strRoomParams = '{}', mainImage = null } = body;
     const { user }: { user: User } = req;
+
     const filters = JSON.parse(strFilters);
     const roomParams = JSON.parse(strRoomParams);
 
@@ -164,7 +168,7 @@ export class RoomController {
       roomParams.countryId,
     );
 
-    return this.roomService.create(
+    const room = await this.roomService.create(
       user,
       roomParams,
       images,
@@ -172,5 +176,9 @@ export class RoomController {
       filterObjects,
       city,
     );
+
+    await this.imageAiService.bulkProcessImages(images);
+
+    return room;
   }
 }

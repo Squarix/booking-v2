@@ -22,6 +22,16 @@ services:
       - POSTGRES_PASSWORD=admin
     volumes:
       - ./docker-volumes/postgresql_analyst:/var/lib/postgresql
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6380:6379"
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
   booking-api:
     build: ./booking-api
     container_name: booking-api

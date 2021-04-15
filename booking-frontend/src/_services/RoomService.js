@@ -31,7 +31,7 @@ export default class RoomService {
     }).then(res => Promise.resolve(res))
   }
 
-  createRoom(roomParams, filters, images, mainImage) {
+  createRoom(roomParams, filters = [], images = [], mainImage = null) {
     const data = new FormData();
     data.append('filters', JSON.stringify(filters));
     data.append('mainImage', mainImage);

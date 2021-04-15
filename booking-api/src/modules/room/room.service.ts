@@ -9,6 +9,7 @@ import { Filter } from '../filter/filter.entity';
 import { City } from '../city/city.entity';
 import { User } from '../users/user.entity';
 
+
 @Injectable()
 export class RoomService {
   constructor(
@@ -70,6 +71,7 @@ export class RoomService {
     room.price = newRoom.price;
     room.size = newRoom.size;
     room.user = user;
+
 
     return this.roomRepository.save(room);
   }
