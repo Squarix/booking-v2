@@ -10,6 +10,8 @@
   "dependencies": {
     "bull": "^3.22.0",
     "lodash": "^4.17.21",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "pg": "^8.6.0",
+    "sequelize": "^6.6.2"
   }
 }

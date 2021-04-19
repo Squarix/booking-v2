@@ -1,5 +1,6 @@
 const Queue = require('bull');
 
+const db = require('../models');
 const imageAiProcessor = require('./processors/image-ai');
 
 const queueName = process.env.IMAGE_AI_QUEUE_NAME || 'image-ai';
@@ -10,6 +11,7 @@ const config = {
   }
 };
 
-const imageAiQueue = new Queue(queueName, config);
-
-imageAiQueue.process(imageAiProcessor);
+db.sequelize.authenticate().then(() => {
+  const imageAiQueue = new Queue(queueName, config);
+  imageAiQueue.process(5, imageAiProcessor);
+})

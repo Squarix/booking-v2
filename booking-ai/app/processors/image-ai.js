@@ -1,9 +1,10 @@
 const _ = require('lodash');
 const path = require('path');
-const fs = require('fs').promises;
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+
+const { Image } = require('../../models');
 
 const { getYoloCommand } = require('./helpers');
 
@@ -14,7 +15,7 @@ module.exports = async function (job, done) {
 
   const filePath = path.join(__dirname, '..', '..', '..', 'booking-api', 'uploads', job.data.path);
   const yoloCommand = getYoloCommand(filePath);
-  const [{stdout }, { stdout: colorStdout }] = await Promise.all([exec(yoloCommand), exec(colorsCmd + filePath)]);
+  const [{ stdout }, { stdout: colorStdout }] = await Promise.all([exec(yoloCommand), exec(colorsCmd + filePath)]);
   const predictions = stdout.split('\n');
   predictions.splice(0, 1);
 
@@ -24,9 +25,12 @@ module.exports = async function (job, done) {
     })
   ).filter(v => v && v.indexOf('%') === -1);
 
-  console.log('Predictions: ', formattedPredictions);
-  console.log('Colors: ', colorStdout);
+  const formattedColors = colorStdout.split('\n')[1];
+  return Image.update({ predictions: formattedPredictions.join(','), hues: formattedColors }, { where: { id: job.id }}).then(() => {
+    console.log('Predictions: ', formattedPredictions);
+    console.log('Colors: ', formattedColors);
 
-  console.log('Image-ai queue Job: ' + job.id + ' finished!');
-  done();
+    console.log('Image-ai queue Job: ' + job.id + ' finished!');
+    done();
+  });
 }

@@ -20,6 +20,9 @@ export class Image {
   @Column({ default: '' })
   hues?: string;
 
+  @Column({ default: '' })
+  predictions?: string;
+
   @ManyToOne((type) => Room, (room) => room.images)
   room: Room;
 
