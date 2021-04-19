@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
 import { Room } from '../room/room.entity';
 
@@ -10,6 +16,9 @@ export class Image {
   @Column()
   @IsNotEmpty()
   path: string;
+
+  @Column({ default: '' })
+  hues?: string;
 
   @ManyToOne((type) => Room, (room) => room.images)
   room: Room;

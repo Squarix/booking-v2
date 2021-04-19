@@ -32,29 +32,30 @@ services:
       - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_REPLICATION_MODE=master
-  booking-api:
-    build: ./booking-api
-    container_name: booking-api
-    restart: always
-    environment:
-      - NODE_ENV=production
-      - DB_PORT=5432
-      - DB_HOST=postgres
-      - DB_ANALYST_HOST=postgres_analyst
-    ports:
-      - '3000:3000'
-    depends_on:
-      - 'postgres'
-      - 'postgres_analyst'
-  booking-frontend:
-    build: ./booking-frontend
-    container_name: booking-frontend
-    restart: always
-    environment:
-      - NODE_ENV=production
-      - API_HOST=booking-api
-      - API_PORT=3000
-    depends_on:
-      - 'booking-api'
-    ports:
-      - '4000:80'
+#  booking-api:
+#    build: ./booking-api
+#    container_name: booking-api
+#    restart: always
+#    environment:
+#      - NODE_ENV=production
+#      - DB_PORT=5432
+#      - DB_HOST=postgres
+#      - DB_ANALYST_HOST=postgres_analyst
+#    ports:
+#      - '3000:3000'
+#    depends_on:
+#      - 'postgres'
+#      - 'postgres_analyst'
+#  booking-frontend:
+#    build: ./booking-frontend
+#    container_name: booking-frontend
+#    restart: always
+#    environment:
+#      - NODE_ENV=production
+#      - API_HOST=booking-api
+#      - API_PORT=3000
+#    depends_on:
+#      - 'booking-api'
+#    ports:
+#      - '4000:80'
+

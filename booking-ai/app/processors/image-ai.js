@@ -7,12 +7,14 @@ const exec = util.promisify(require('child_process').exec);
 
 const { getYoloCommand } = require('./helpers');
 
+const colorsCmd = `python ${path.join(__dirname, '..', 'python', 'colors.py')} `;
+
 module.exports = async function (job, done) {
   console.log('Image-ai queue Job: ' + job.id + ' started!');
 
   const filePath = path.join(__dirname, '..', '..', '..', 'booking-api', 'uploads', job.data.path);
   const yoloCommand = getYoloCommand(filePath);
-  const { stdout } = await exec(yoloCommand);
+  const [{stdout }, { stdout: colorStdout }] = await Promise.all([exec(yoloCommand), exec(colorsCmd + filePath)]);
   const predictions = stdout.split('\n');
   predictions.splice(0, 1);
 
@@ -20,7 +22,10 @@ module.exports = async function (job, done) {
     predictions.map(prediction => {
       return prediction.split(': ');
     })
-  ).filter(v => v);
+  ).filter(v => v && v.indexOf('%') === -1);
+
+  console.log('Predictions: ', formattedPredictions);
+  console.log('Colors: ', colorStdout);
 
   console.log('Image-ai queue Job: ' + job.id + ' finished!');
   done();
