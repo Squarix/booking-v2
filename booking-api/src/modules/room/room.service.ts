@@ -9,7 +9,6 @@ import { Filter } from '../filter/filter.entity';
 import { City } from '../city/city.entity';
 import { User } from '../users/user.entity';
 
-
 @Injectable()
 export class RoomService {
   constructor(
@@ -72,8 +71,22 @@ export class RoomService {
     room.size = newRoom.size;
     room.user = user;
 
-
     return this.roomRepository.save(room);
+  }
+
+  findAllWithKeywords(): Promise<Room[]> {
+    return this.roomRepository
+      .createQueryBuilder('r')
+      .leftJoinAndSelect('r.filters', 'filters')
+      // .select(['r.id, filters.filter'])
+      .getMany();
+  }
+
+  findAllWithDescription(): Promise<{ id: number; description: string }[]> {
+    return this.roomRepository.find({
+      select: ['id', 'description'],
+      where: { status: RoomStatus.published },
+    });
   }
 
   async findAllPending(take = 21, skip = 0): Promise<ManyModelDto<Room>> {

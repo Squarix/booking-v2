@@ -15,9 +15,13 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import * as CSV from 'objects-to-csv';
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { RoomService } from './room.service';
 import { Room } from './room.entity';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { ImageService } from '../image/image.service';
 import { Image } from '../image/image.entity';
 import { Filter } from '../filter/filter.entity';
@@ -46,6 +50,31 @@ export class RoomController {
     private readonly eventsGateway: EventsGateway,
     private readonly imageAiService: ImageAiService,
   ) {}
+
+  @Get('/recommendation')
+  async getRecommendations(@Query('limit') limit = 0) {
+    const [roomsKeywords, roomsDescriptions] = await Promise.all([
+      this.roomService.findAllWithKeywords(),
+      this.roomService.findAllWithDescription(),
+    ]);
+    const descriptionCSV = new CSV(roomsDescriptions);
+    console.log(roomsKeywords);
+    const keywords = roomsKeywords.map((room) => ({
+      id: room.id,
+      keywords: room.filters.map((f) => f.filter).join(' '),
+    }));
+
+    const keywordsCSV = new CSV(keywords);
+
+    const dataDir = path.join(__dirname, '..', '..', '..', 'data');
+
+    await Promise.all([
+      descriptionCSV.toDisk(path.join(dataDir, 'description.csv')),
+      keywordsCSV.toDisk(path.join(dataDir, 'keywords.csv')),
+    ]);
+
+    console.log('END');
+  }
 
   @Get(':id')
   findOne(@Param('id') id: number): Promise<Room> {
@@ -138,7 +167,11 @@ export class RoomController {
     @Request() req,
     @Body() body,
   ): Promise<Room> {
-    const { filters: strFilters = '{}', roomParams: strRoomParams = '{}', mainImage = null } = body;
+    const {
+      filters: strFilters = '{}',
+      roomParams: strRoomParams = '{}',
+      mainImage = null,
+    } = body;
     const { user }: { user: User } = req;
 
     const filters = JSON.parse(strFilters);
