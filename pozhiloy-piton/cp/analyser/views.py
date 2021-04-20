@@ -74,6 +74,6 @@ def homePageView(request):
     ids = request.GET.get('ids').split(',')
     response_data = {}
     for i in ids:
-        response_data[i] = get_recommendations(int(i), cosine_sim2).head(5).to_json()
+        response_data[i] = get_recommendations(int(i), cosine_sim2).head(5).to_list()
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")

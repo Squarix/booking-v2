@@ -9,6 +9,14 @@ export const room = asyncField({
   },
 });
 
+export const recommendations = asyncField({
+  reducerTemplate: asyncField.REDUCER_TEMPLATE.MANY_MODELS,
+  actionOptions: {
+    uri: 'rooms/recommendations',
+    method: asyncField.METHODS.GET,
+  }
+})
+
 export const updateRoom = asyncField({
   reducerTemplate: asyncField.REDUCER_TEMPLATE.EDIT_MODEL,
   actionOptions: {
@@ -57,4 +65,5 @@ export default combineFieldReducers({
   room,
   updateRoom,
   userRooms,
+  recommendations,
 });

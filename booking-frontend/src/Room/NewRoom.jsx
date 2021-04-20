@@ -11,6 +11,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Slide from "@material-ui/core/Slide";
+import Tooltip from '@material-ui/core/Tooltip';
+
 
 import { Form, Formik, Field, connect as formikConnect } from 'formik';
 
@@ -108,6 +110,7 @@ class NewRoom extends React.Component {
       description: values.description,
       size: values.size,
       guestsAmount: values.guestsAmount,
+      total: values.total,
       price: values.price,
       city: values.city,
       lat: values.lat,
@@ -229,6 +232,19 @@ class NewRoom extends React.Component {
                       component={OutlineTextField}
                       required
                     />
+                  </Grid>
+                  <Grid item xs={12} md={6} className={classes.gridItem}>
+                    <Tooltip title="This field show how much of these apartments you have (used by hotels)" arrow>
+                      <Field
+                        name="total"
+                        type="text"
+                        label="Total apartments:"
+                        placeholder="Total apartments"
+                        defaultValue="1"
+                        component={OutlineTextField}
+                        required
+                      />
+                    </Tooltip>
                   </Grid>
                   <Grid item xs={12} className={classes.gridItem}>
                     <RoomFilter categories={filterCategories} />

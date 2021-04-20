@@ -9,6 +9,7 @@ import ProfileRoute from "./Profile/ProfileRoute";
 import NotFound from "./Layouts/NotFound";
 import AdminRoutes from "./Admin/AdminRoutes";
 import Forbidden from "./Layouts/Forbidden";
+import User from "./User";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/rooms" component={RoomRoutes} />
         <Route path="/profile" component={ProfileRoute} />
         <Route path="/admin" component={AdminRoutes} />
+        <Route path="/users/:userId" component={User} />
         <Route path="/403" component={Forbidden} />
         <Route path='*' exact component={NotFound} />
       </Switch>

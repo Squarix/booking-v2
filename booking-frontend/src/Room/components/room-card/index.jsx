@@ -17,7 +17,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import PhotoCameraOutlinedIcon from '@material-ui/icons/PhotoCameraOutlined';
 import { apiUrl } from "../../../_services/config";
 
-export default function Index(props) {
+export default function RoomCard(props) {
   const getTooltipTitle = title => (
     <span className="room-card__tooltip">{title}</span>
   );

@@ -62,6 +62,9 @@ export class Room {
   @IsNotEmpty()
   lat: number;
 
+  @Column({ default: 1 })
+  total: number;
+
   @ManyToOne(() => City, (city) => city.rooms)
   city: City;
 

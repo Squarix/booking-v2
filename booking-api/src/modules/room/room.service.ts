@@ -78,7 +78,6 @@ export class RoomService {
     return this.roomRepository
       .createQueryBuilder('r')
       .leftJoinAndSelect('r.filters', 'filters')
-      // .select(['r.id, filters.filter'])
       .getMany();
   }
 
@@ -118,6 +117,18 @@ export class RoomService {
     return this.findOne(id);
   }
 
+  async findByIds(ids: number[]): Promise<Room[]> {
+    console.log(ids);
+    return this.roomRepository
+      .createQueryBuilder('r')
+      .leftJoinAndSelect('r.image', 'image')
+      .leftJoinAndSelect('r.filters', 'filters')
+      .leftJoinAndSelect('r.city', 'city')
+      .where('status = :status', { status: RoomStatus.published })
+      .andWhere('r.id IN (:...ids)', { ids })
+      .getMany();
+  }
+
   async findAll(
     take = 21,
     skip = 0,
@@ -127,6 +138,7 @@ export class RoomService {
     guests: number,
     rooms: number,
     city: string,
+    userId: number,
   ): Promise<ManyModelDto<Room>> {
     const query = this.roomRepository
       .createQueryBuilder('r')
@@ -146,6 +158,7 @@ export class RoomService {
     if (guests) query.andWhere('r."guestsAmount" = :guests', { guests });
     if (rooms) query.andWhere('size = :rooms', { rooms });
     if (city) query.andWhere('city."name" LIKE :city', { city: `%${city}%` });
+    if (userId) query.andWhere('r."userId" = :userId', { userId });
 
     if (order) query.orderBy('r.price', order);
 

@@ -17,7 +17,6 @@ import {
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import * as CSV from 'objects-to-csv';
-import * as fs from 'fs';
 import * as path from 'path';
 
 import { RoomService } from './room.service';
@@ -37,7 +36,7 @@ import { EventsGateway } from '../events/events.gateway';
 import { ImageAiService } from '../image-ai/image-ai.service';
 
 import { DATE_ALREADY_BOOKED_MESSAGE } from './constants';
-import { daysBetween } from './room.helper';
+import { daysBetween, getRecommendations } from './room.helper';
 
 @Controller('rooms')
 export class RoomController {
@@ -51,8 +50,20 @@ export class RoomController {
     private readonly imageAiService: ImageAiService,
   ) {}
 
-  @Get('/recommendation')
-  async getRecommendations(@Query('limit') limit = 0) {
+  @Get('/recommendations/:id')
+  async getRecommendations(@Param('id') id: number) {
+    const recommendations = await getRecommendations(id);
+    const rooms = await this.roomService.findByIds(recommendations);
+    const response = [];
+    rooms.forEach((room) => {
+      response[recommendations.indexOf(room.id)] = room;
+    });
+
+    return response;
+  }
+
+  @Get('/csv')
+  async createCSV() {
     const [roomsKeywords, roomsDescriptions] = await Promise.all([
       this.roomService.findAllWithKeywords(),
       this.roomService.findAllWithDescription(),
@@ -68,12 +79,10 @@ export class RoomController {
 
     const dataDir = path.join(__dirname, '..', '..', '..', 'data');
 
-    await Promise.all([
+    return Promise.all([
       descriptionCSV.toDisk(path.join(dataDir, 'description.csv')),
       keywordsCSV.toDisk(path.join(dataDir, 'keywords.csv')),
     ]);
-
-    console.log('END');
   }
 
   @Get(':id')
@@ -101,7 +110,7 @@ export class RoomController {
       room,
     );
 
-    if (thisDateBookings.length) {
+    if (thisDateBookings.length === room.total) {
       throw new HttpException(
         DATE_ALREADY_BOOKED_MESSAGE,
         HttpStatus.BAD_REQUEST,
@@ -131,6 +140,7 @@ export class RoomController {
     @Query('guests') guests: number,
     @Query('rooms') rooms: number,
     @Query('city') city: string,
+    @Query('userId') userId: number,
   ) {
     return this.roomService.findAll(
       limit,
@@ -141,6 +151,7 @@ export class RoomController {
       guests,
       rooms,
       city,
+      userId,
     );
   }
 

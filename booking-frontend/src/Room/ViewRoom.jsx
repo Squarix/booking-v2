@@ -1,7 +1,7 @@
 import 'date-fns';
 import React from 'react';
 import Grid from "@material-ui/core/Grid";
-import { Container, Snackbar, Typography } from "@material-ui/core";
+import { Container, Snackbar, Typography , Paper } from "@material-ui/core";
 import withStyles from "@material-ui/core/styles/withStyles";
 import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
@@ -21,16 +21,19 @@ import io from 'socket.io-client';
 
 import DatePicker from "react-datepicker";
 import Button from "@material-ui/core/Button";
-import { Redirect } from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import { connect } from "react-redux";
 import { Alert } from "@material-ui/lab";
 import InfoDialog from "../Layouts/InfoDialog";
 import Menu from "../Layouts/Menu";
-import { bookings, createBooking, room } from "../reducers/room-reducer";
+import {bookings, createBooking, recommendations, room} from "../reducers/room-reducer";
 import { apiUrl } from "../_services/config";
 import styles from './styles';
 import MapComponent from "../Search/components/google-map";
 import { analystImageFocusAction, analystViewDatesAction } from "../global-analyst";
+
+
+import RoomCard from "./components/room-card";
 
 class ViewRoom extends React.Component {
   constructor(props) {
@@ -64,6 +67,7 @@ class ViewRoom extends React.Component {
     const roomId = this.props.match.params.id;
     this.props.fetchRoom({ id: roomId });
     this.props.fetchBookings({ id: roomId, collection: 'bookings' });
+    this.props.fetchRecommendations({ id: roomId });
   }
 
   onStartDateChange = (date) => {
@@ -238,7 +242,13 @@ class ViewRoom extends React.Component {
                 </ListItem>
                 <ListItem className={classes.label}>
                   <PermIdentityIcon />
-                  <span>{room?.user.email}</span>
+                  <Link to={`/users/${room?.user.id}`}>
+                    <span>
+                      {room?.user.firstName} 
+                      {' '}
+                      {room?.user.lastName}
+                    </span>
+                  </Link>
                 </ListItem>
                 <ListItem className={classes.label}>
                   <DatePicker
@@ -249,7 +259,7 @@ class ViewRoom extends React.Component {
                     onCalendarOpen={this.onDatesOpen}
                     placeholderText="Select start date"
                     dateFormat="d MMMM yyyy"
-                    filterDate={(date) => isValidDate(mergedBookings, date, null, this.state.endDate)}
+                    filterDate={(date) => isValidDate(room.total, mergedBookings, date, null, this.state.endDate)}
                   />
                 </ListItem>
                 <ListItem className={classes.label}>
@@ -260,7 +270,7 @@ class ViewRoom extends React.Component {
                     onChange={this.onEndDateChange}
                     placeholderText="Select end date"
                     dateFormat="d MMMM yyyy"
-                    filterDate={(date) => isValidDate(mergedBookings, date, this.state.startDate, null)}
+                    filterDate={(date) => isValidDate(room.total, mergedBookings, date, this.state.startDate, null)}
                   />
                 </ListItem>
                 {!!this.state.totalPrice && (
@@ -287,13 +297,23 @@ class ViewRoom extends React.Component {
                 )}
               </List>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} className={classes.map}>
               <MapComponent markers={[{ lat: room.lat, lng: room.lng }]} />
             </Grid>
             {
               this.state.redirectCabinet ?
                 <Redirect to="/profile/bookings" /> : ''
             }
+            <Grid item xs={12} className={classes.recommendation}>
+              <Typography variant="h4">Related: </Typography>
+              <Grid container>
+                {this.props.recommendations.map(recommendation => (
+                  <Grid item md={4} xs={12} className={classes.recommendationItem}>
+                    <RoomCard {...recommendation} />
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
           </Grid>
           {this.getSnackBar()}
         </Container>
@@ -303,16 +323,21 @@ class ViewRoom extends React.Component {
 }
 
 
-function checkDate(dates, searchDate) {
+function checkDate(roomTotal, dates, searchDate) {
+  let total = 0;
   for (const date of dates) {
-    if (new Date(date.arriveDate) <= searchDate && searchDate <= new Date(date.endDate))
-      return false
+    if (new Date(date.arriveDate) <= searchDate && searchDate <= new Date(date.endDate)) {
+      total += 1;
+      if (total === roomTotal) {
+        return false;
+      }
+    }
   }
 
   return true;
 }
 
-function isValidDate(bookedDates = [], date, startDate, endDate) {
+function isValidDate(roomTotal, bookedDates = [], date, startDate, endDate) {
   let minDate = new Date();
   minDate.setHours(0, 0, 0, 0);
 
@@ -322,7 +347,7 @@ function isValidDate(bookedDates = [], date, startDate, endDate) {
   minDate = startDate || minDate;
   maxDate = endDate || maxDate;
 
-  return (checkDate(bookedDates, date) && (date > minDate) && (date < maxDate))
+  return (checkDate(roomTotal, bookedDates, date) && (date > minDate) && (date < maxDate))
 }
 
 function getDifferenceInDays(startDate, endDate) {
@@ -333,6 +358,7 @@ const styledComponent = withStyles(styles, { withTheme: true })(ViewRoom);
 
 export default connect(state => ({
   room: state.room.room.data,
+  recommendations: state.room.recommendations.data,
   isRoomLoading: state.room.room.pending,
   bookings: state.room.bookings.data,
   bookingSuccess: state.room.createBooking.success,
@@ -341,6 +367,7 @@ export default connect(state => ({
 }), {
   fetchRoom: room.action,
   fetchBookings: bookings.action,
+  fetchRecommendations: recommendations.action,
   clearBookings: bookings.clearAction,
   clearRoom: room.clearAction,
   createBooking: createBooking.action,

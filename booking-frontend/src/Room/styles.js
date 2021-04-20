@@ -60,8 +60,20 @@ const styles = theme => ({
 
 	roomImage: {
 		margin: 'auto 0'
-	}
+	},
 
+	map: {
+		padding: '0 80px'
+	},
+
+	recommendation: {
+		textAlign: 'left',
+		padding: '0 80px',
+		marginTop: theme.spacing(4),
+	},
+	recommendationItem: {
+		margin: theme.spacing(2, 0),
+	}
 });
 
 export default styles;
