@@ -13,5 +13,5 @@ const config = {
 
 db.sequelize.authenticate().then(() => {
   const imageAiQueue = new Queue(queueName, config);
-  imageAiQueue.process(5, imageAiProcessor);
+  imageAiQueue.process(3, imageAiProcessor);
 })
