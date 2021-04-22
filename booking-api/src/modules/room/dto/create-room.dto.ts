@@ -4,6 +4,7 @@ export class CreateRoomDto {
   size: number;
   guestsAmount: number;
   price: number;
+  total: number;
   lat: number;
   lng: number;
 }

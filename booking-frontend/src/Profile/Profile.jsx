@@ -25,6 +25,7 @@ class Profile extends React.Component {
     id: '',
     firstName: '',
     lastName: '',
+    profileDescription: '',
     editable: ''
   }
 
@@ -36,9 +37,9 @@ class Profile extends React.Component {
   }
 
   handleSave = () => {
-    const {firstName, lastName} = this.state;
+    const {firstName, lastName, profileDescription} = this.state;
     profileService.updateProfile(this.state.id, {
-      firstName, lastName
+      firstName, lastName, profileDescription
     }).then(res => {
       console.log(res)
     })
@@ -59,6 +60,7 @@ class Profile extends React.Component {
     const editables = [
       {key: 'Last name', value: this.state.lastName, state: 'lastName'},
       {key: 'First name', value: this.state.firstName, state: 'firstName'},
+      {key: 'Profile Description', value: this.state.profileDescription, state: 'profileDescription', multi: true},
     ]
     return (
       <>
@@ -81,6 +83,9 @@ class Profile extends React.Component {
               <div>
                 <Button href="/profile/rooms">Rooms</Button>
               </div>
+              <div>
+                <Button href="/profile/analytics">Analytics</Button>
+              </div>
             </Grid>
             <Grid item md={8} xs={12}>
               {editables.map(editable => (
@@ -98,34 +103,34 @@ class Profile extends React.Component {
                         >
                           <EditIcon fontSize="small" />
                         </IconButton>
-                      </>
-                          )
-                            : (
-                              <>
-                                <TextField
-                                  key={editable.key}
-                                  id="standard-search"
-                                  name={editable.state}
-                                  value={editable.value || ''}
-                                  onChange={this.handleInputChange}
-                                  type="text"
-                                  className={classes.textField}
-                                  margin="normal"
-                                />
-                                <IconButton
-                                  key={editable.state}
-                                  aria-label="Save"
-                                  className={classes.margin}
-                                  onClick={() => this.handleChangeEditable('')}
-                                >
-                                  <SaveIcon fontSize="small" />
-                                </IconButton>
-                              </>
-                          )}
+                      </>)
+                        : (
+                          <>
+                            <TextField
+                              key={editable.key}
+                              id="standard-search"
+                              name={editable.state}
+                              multiline={editable.multi}
+                              value={editable.value || ''}
+                              onChange={this.handleInputChange}
+                              type="text"
+                              className={classes.textField}
+                              margin="normal"
+                            />
+                            <IconButton
+                              key={editable.state}
+                              aria-label="Save"
+                              className={classes.margin}
+                              onClick={() => this.handleChangeEditable('')}
+                            >
+                              <SaveIcon fontSize="small" />
+                            </IconButton>
+                          </>
+                        )}
                   </div>
                 </Grid>
-                  )
-                )}
+                )
+              )}
             </Grid>
             <Grid xs={4} item>
               <Button

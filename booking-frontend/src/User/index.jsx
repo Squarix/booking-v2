@@ -77,6 +77,9 @@ class User extends React.Component {
                 <EmailIcon />
                 <Typography variant="subtitle1">{user?.email}</Typography>
               </Grid>
+              <Grid item xs={12} container>
+                <Typography variant="body1" style={{ paddingTop: 25 }}>{user?.profileDescription}</Typography>
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12}>

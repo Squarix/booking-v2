@@ -82,7 +82,7 @@ class Bookings extends React.Component {
             </TableHead>
             <TableBody>
               {this.state.rents.map(booking => (
-                <TableRow key={booking.room.id}>
+                <TableRow key={booking.id}>
                   <TableCell component="th" scope="row">
                     <a href={`/rooms/${booking.room.id}`}>
                       {booking.room.id}

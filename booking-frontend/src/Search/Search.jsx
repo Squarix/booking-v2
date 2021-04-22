@@ -45,7 +45,7 @@ class Search extends React.Component {
     address: '',
     description: '',
     page: 1,
-    limit: 20,
+    limit: 10,
     sortingSelect: false,
     order: '',
     viewMode: 'default',
@@ -193,6 +193,12 @@ class Search extends React.Component {
     });
   }
 
+  onSearch = () => {
+    this.setState({ page: 1 }, () => {
+      this.handleSearch();
+    });
+  }
+
   changeViewMode = ({ target: { checked } }) => {
     this.setState({ viewMode: checked ? 'map' : 'default' });
   }
@@ -280,7 +286,7 @@ class Search extends React.Component {
                 {this.getFilters()}
               </div>
               <div className={classes.margin} />
-              <Button variant='outlined' color='primary' className={classes.button} onClick={this.handleSearch}>
+              <Button variant='outlined' color='primary' className={classes.button} onClick={this.onSearch}>
                 Search
               </Button>
             </Grid>

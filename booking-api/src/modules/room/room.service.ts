@@ -62,6 +62,7 @@ export class RoomService {
     room.city = city;
     room.description = newRoom.description;
     room.guestsAmount = newRoom.guestsAmount;
+    room.total = newRoom.total;
     room.filters = filters;
     room.image = previewImage;
     room.images = images;

@@ -30,6 +30,9 @@ export class User {
   @IsEmail()
   email: string;
 
+  @Column({ default: '' })
+  profileDescription: string;
+
   @Column({ default: UserTypes.user })
   type: UserTypes;
 
